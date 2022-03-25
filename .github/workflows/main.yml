@@ -1,33 +1,34 @@
-# On every push this script is executed
-on: push
-name: Build and deploy GH Pages
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: build_and_deploy
-        uses: shalzz/zola-deploy-action@v0.14.1
-        with:
-          PAGES_BRANCH: gh-pages
-          TOKEN: ${{ secrets.TOKEN }}
-
+# # On every push this script is executed
 # on: push
 # name: Build and deploy GH Pages
 # jobs:
 #   build:
-#     name: shalzz/zola-deploy-action
 #     runs-on: ubuntu-latest
+#     if: github.ref == 'refs/heads/master'
 #     steps:
-#     - uses: actions/checkout@master
-#     - name: shalzz/zola-deploy-action
-#       uses: shalzz/zola-deploy-action@master
-#       env:
-#         PAGES_BRANCH: gh-pages
-#         TOKEN: ${{ secrets.TOKEN }}
-#         ZOLA_ENV: prod
+#       - name: checkout
+#         uses: actions/checkout@v2
+#       - name: build_and_deploy
+#         uses: shalzz/zola-deploy-action@v0.14.1
+#         with:
+#           PAGES_BRANCH: gh-pages
+#           TOKEN: ${{ secrets.TOKEN }}
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on: push
+name: Build and deploy GH Pages
+jobs:
+  build:
+    name: shalzz/zola-deploy-action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: shalzz/zola-deploy-action
+      uses: shalzz/zola-deploy-action@master
+      with:
+        PAGES_BRANCH: gh-pages
+        TOKEN: ${{ secrets.TOKEN }}
+        ZOLA_ENV: prod
 
 # On every push this script is executed
 # on: push
