@@ -1,24 +1,23 @@
 /* Variables */
 $background-color: #fff;
-$border-color: #c3c3c3;
+$border-color: #999999;
+$border-color-thin: #f0f0f0;
 
-$text-color: #333;
+$text-color: rgb(35, 49, 68);
 
-$a11y-gray: #757575;
+$a11y-gray: #9e9e9e;
 
 $link-color: #1d60a3;
 $link-hover-color: #1da388;
-$link-hover-line-color: #007884;
+$link-hover-line-color: $link-hover-color;
 $icon-hover-color: $link-hover-color;
+
 
 /* Basic */
 html {
     font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-    /* 1 */
     -ms-text-size-adjust: 100%;
-    /* 2 */
     -webkit-text-size-adjust: 100%;
-    /* 2 */
 }
 
 body {
@@ -44,10 +43,10 @@ nav,
 section,
 summary {
     display: block;
-}	
+}
 
 .container {
-    max-width: 42em;
+    max-width: 60%;
     margin: 2em auto 0;
 }
 
@@ -55,47 +54,56 @@ main {
     outline: none;
 }
 
+
 /* Index-specific styling */
 .index-columns {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
 .index-listing {
     min-width: 48%;
     max-width: 48%;
     flex-grow: 1;
 }
+
 .index-listing h2 {
-    text-transform: uppercase;
-    font-size: 0.8em;
+    font-size: 20px;
     margin-block-start: 1em;
     margin-block-end: 0;
     border-bottom: thin dotted $border-color;
 }
+
 .index-banner {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    object-position: 0 46%;
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    // justify-self: center;
+    // justify-content: center;
+    // object-fit: cover;
+    // object-position: 0 90%;
 }
+
 
 /* Headers */
 h1 {
-    font-size: 1.35em;
+    font-size: 30px;
 }
 
 h2 {
-    font-weight: normal;
-    font-size: 1.2em;
+    // font-weight: normal;
+    font-size: 25px;
 }
 
 h3 {
-    font-size: 1em;
+    font-size: 20px;
+    margin-top: 40px;
+    margin-bottom: 0px;
 }
 
-/* Links */
 
+/* Links */
 a {
     color: $link-color;
     text-decoration: none;
@@ -122,6 +130,7 @@ a.active {
     color: $link-hover-color;
 }
 
+
 /* Table */
 .table-wrapper {
     overflow-x: auto;
@@ -137,10 +146,12 @@ thead {
     background: lightgrey;
 }
 
-th, td {
+th,
+td {
     padding: 0.5em 1em;
     border: 1px double lightgrey;
 }
+
 
 /* Code */
 pre {
@@ -149,26 +160,29 @@ pre {
     max-width: 100%;
     overflow: auto;
 }
-
 code,
 pre,
 kbd {
     font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
-    font-size: 0.90em;
-    line-height: 130%;
+    font-size: 13px;
+    line-height: 140%;
+    border-radius: 15px;
 }
 
-/* Styles */
 
+/* Styles */
 blockquote {
-    border-left: 2px solid #cccccc;
+    border-left: 5px solid #cccccc;
     padding: 0.1em 1em;
-    margin-left: 0.75em;
+    margin-left: 30px;
 }
 
 p {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    // margin-top: 0.5em;
+    // margin-bottom: 0.5em;
+    // margin-top: 10px;
+    // margin-bottom: 10px;
+    font-size: 15px;
 }
 
 hr {
@@ -178,27 +192,29 @@ hr {
 }
 
 ul ol, ol ol, ul ul {
-    margin: 0em 2em;
+    margin: 0px 0px;
 }
 
-/* Header */
 
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
 
-    h1 {
-        font-size: 1em;
-        font-weight: normal;
-        display: inline-block;
-    }
+    // h1 {
+    //     font-size: 1em;
+    //     font-weight: normal;
+    //     display: inline-block;
+    // }
 
-    h2 {
-        color: $a11y-gray;
-        font-size: 0.8em;
-        margin: 0 0 0.8em 0;
-        font-weight: normal;
-    }
+    // h2 {
+    //     color: $a11y-gray;
+    //     font-size: 0.8em;
+    //     // font-size: 10px;
+    //     // margin: 0 0 0.8em 0;
+    //     // margin: 100px 0px;
+    //     // font-weight: normal;
+    // }
 
     nav {
         margin-top: 1em;
@@ -209,7 +225,7 @@ header {
         ul {
             list-style-type: none;
             display: inline-block;
-            float: right;
+            // float: right;
         }
 
         li {
@@ -222,8 +238,9 @@ header {
         color: #333;
     }
 }
-/* Anchor links */
 
+
+/* Anchor links */
 h1, h2, h3, h4, h5, h6  {
     .zola-anchor {
         filter: opacity(0);
@@ -237,41 +254,43 @@ h1, h2, h3, h4, h5, h6  {
 }
 
 .site-header {
-    font-size: 1.5em;
+    // font-size: 1.5em;
+    font-size: 30px;
     font-weight: bolder;
-    margin-block-start: 1em;
-    white-space: nowrap;
+    font-weight: 800;
+    // margin-block-start: 1em;
+    // white-space: nowrap;
 }
 
 /* Pages */
 main h1 {
-    margin-top: 1em;
+    // margin-top: 1em;
     font-weight: normal;
     line-height: 1.1em;
     margin-bottom: 0.5em;
-    font-weight: 600;
+    // margin-bottom: 100px;
+    font-size: 15px;
 }
 
 .post-short-list:first-of-type {
-    margin-top: 1em;
+    margin-top: 100px;
 }
+
 
 /* Articles */
-
-
 article:not(:last-of-type) {
-    padding-bottom: 0.5em;
+    padding-bottom: 30px;
+    border-bottom: thin solid $border-color-thin;
 }
 
-article:first-of-type header h3 {
-    margin-block-start: 0.5em;
+article {
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 article header h1 {
-    font-size: 1.35em;
-    line-height: 1.1em;
-    margin-bottom: 0.5em;
-    font-weight: 600;
+    font-size: 40px;
+    font-weight: 900;
 
     a {
         border: none;
@@ -281,11 +300,15 @@ article header h1 {
 }
 
 article header h2 {
-    font-size: 0.9em;
+    font-size: 15px;
+    margin-top: -35px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: $a11y-gray;
 }
 
 .article-info {
-    font-size: 0.75em;
+    font-size: 12px;
     color: $a11y-gray;
 
     a {
@@ -296,10 +319,11 @@ article header h2 {
     }
 }
 
-.post-short-list .article-info {
-    margin-top: 0;
-    margin-bottom: 1.5em;
-}
+// .post-short-list
+// .article-info {
+//     // margin-top: 0;
+//     // margin-bottom: 1.5em;
+// }
 
 .article-taxonomies {
     display: inline-block;
@@ -339,6 +363,7 @@ article header h2 {
 .article-github {
     display: inline-block;
 }
+
 
 /* Images */
 article img {
@@ -407,9 +432,10 @@ figcaption {
     display: block;
 
     p {
-        font-size: 0.8em;
+        // font-size: 0.8em;
+        font-size: 13px;
+        margin-top: 10px;
         display: block;
-        margin-top: 0;
     }
 }
 
@@ -458,19 +484,20 @@ figcaption {
     }
 }
 
+
 /* Other pages */
 .terms {
     list-style-type: none;
     padding: 0;
-    line-height: 2em;
+    line-height: 5em;
 }
 
-/* Pagination */
 
+/* Pagination */
 .pagination {
     display: flex;
     justify-content: space-between;
-    margin-top: 3em;
+    // margin-top: 100px;
 }
 
 .pagination {
@@ -479,7 +506,8 @@ figcaption {
 
 .pagination-item {
     background: #fafafa;
-    padding: 0.75em 0.75em;
+    padding: 100px;
+    // padding: 0.75em 0.75em;
 }
 
 .disabled {
@@ -491,31 +519,36 @@ figcaption {
         color: #333333;
     }
 
-    a:hover, a:focus {
+    a:hover,
+    a:focus {
         color: $link-hover-color;
         border-bottom: 0;
     }
 }
 
-/* Footer */
 
+/* Footer */
+// Styling applied to the footer at the very bottom.
+// Includes the icon links (i.e., twitter, github, etc.)
 footer {
     border-top: thin dotted $border-color;
-    margin-top: 2em;
-    font-size: 16px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    font-size: 15px;
     text-align: center;
 }
 
 
 /* Icons */
-
 .icon-text {
+    // Padding between the icons at the very bottom.
     a {
-        padding: 0 8px 0 8px;
+        padding: 0px 25px;
     }
 }
 
-.icon-text, .article-github {
+.icon-text,
+.article-github {
     a {
         color: #333333;
     }
@@ -528,8 +561,8 @@ footer {
     }
 }
 
-/* Media Queries */
 
+/* Media Queries */
 @media (max-width: 840px) {
     .main-wrapper {
         margin: 0;

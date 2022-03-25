@@ -1,9 +1,6 @@
 +++
 title = "What is Zola"
 date = 2021-10-03
-
-[taxonomies]
-tags = ["rust", "other"]
 +++
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
@@ -92,4 +89,3 @@ X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
 Press <kbd><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>Delete</kbd></kbd> to end the session.
 
 <mark>Skinks</mark> can often hide easily in their habitat because of their protective colouring (camouflage).
-

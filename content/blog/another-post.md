@@ -1,9 +1,6 @@
 +++
-title = "More on Skinks"
+title = "More on Skanks"
 date = 2021-10-02
-
-[taxonomies]
-tags = ["other"]
 +++
 
 Many species are good burrowers. More species are terrestrial or fossorial (burrowing) than arboreal (tree-climbing) or aquatic species.
@@ -95,4 +92,3 @@ X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
 Press <kbd><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>Delete</kbd></kbd> to end the session.
 
 <mark>Skinks</mark> can often hide easily in their habitat because of their protective colouring (camouflage).
-

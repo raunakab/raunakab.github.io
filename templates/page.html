@@ -60,12 +60,14 @@
         {% set page_contents = page.content | replace(from=page.summary, to="") %}
         <header>
             <h1>{{ page.title }}</h1>
+            <!-- <h1 class="post-summary">{{ page.summary | striptags | safe }}</h1> -->
             <h2 class="post-summary">{{ page.summary | striptags | safe }}</h2>
+            <!-- <h3 class="post-summary">{{ page.summary | striptags | safe }}</h3> -->
         </header>
         {% if page.components is containing("projects") %}
-        {{ page_macros::project_info(page=page) }}
+            {{ page_macros::project_info(page=page) }}
         {% else %}
-        {{ page_macros::page_info(page=page) }}
+            {{ page_macros::page_info(page=page) }}
         {% endif %}
     {% else %}
         {% set page_contents = page.content %}

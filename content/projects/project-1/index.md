@@ -6,7 +6,7 @@ date = 2021-08-11
 categories = ["software"]
 
 [extra]
-repo_path = "justint/papaya"
+# repo_path = "justint/papaya"
 +++
 
 This is my first software project!
