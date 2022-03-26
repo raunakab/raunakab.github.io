@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://raunakab.github.io/"
+base_url = "https://raunakab.github.io"
 
 title = "Raunak Bhagat"
 description = "Software Engineering | Mathematics"
