@@ -4,7 +4,7 @@ render = true
 template = "about.html"
 +++
 
-{{ img(path="@/about/me-and-fam.jpg", alt="It's me!", caption="It's me!") }}
+{{ img(path="@/about/me-and-fam.jpg", alt="It's me!", caption="Me, on the far left, alongside my younger brother and mom.") }}
 
 &nbsp;
 
