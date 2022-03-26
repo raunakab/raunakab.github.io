@@ -2,7 +2,7 @@
 base_url = "https://raunakab.github.io"
 
 title = "Raunak Bhagat"
-description = "Software Engineering | Mathematics"
+description = "Software Engineering + Mathematics"
 default_language = "en"
 
 # Whether to automatically compile all Sass files in the sass directory
@@ -33,7 +33,7 @@ highlight_code = true
 
 [languages.en]
 title = "Raunak Bhagat"
-description = "Software Engineering | Mathematics"
+description = "Software Engineering + Computer Science + Mathematics"
 generate_feed = true
 feed_filename = "atom.xml"
 
@@ -41,8 +41,12 @@ feed_filename = "atom.xml"
 projects = "Projects"
 blog = "Blog"
 about = "About"
+work_experience = "Work Experience"
+
 recent_projects = "Recent Projects"
 recent_blog_posts = "Recent Blog Posts"
+recent_work_experience = "Recent Work Experience"
+
 more_key = "More"
 
 tag = "Tag"
@@ -99,6 +103,7 @@ env = "ZOLA_ENV"
 
 # List of Papaya navigational menu items. Used to construct the navigation bar. See the README for item schema.
 menu_items = [
+    { name = "work_experience", url = "$LANG_BASE_URL/work_experience", show_recent = true, recent_items = 3, recent_trans_key = "recent_work_experience", more_trans_key = "more_key" },
     { name = "projects", url = "$LANG_BASE_URL/projects", show_recent = true, recent_items = 3, recent_trans_key = "recent_projects", more_trans_key = "more_key" },
     { name = "blog", url = "$LANG_BASE_URL/blog", show_recent = true, recent_items = 3, recent_trans_key = "recent_blog_posts", more_trans_key = "more_key" },
     # tag is not a zola section, it's just a link.

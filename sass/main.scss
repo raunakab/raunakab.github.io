@@ -1,5 +1,6 @@
 /* Variables */
 $background-color: #fff;
+$border-color-dark: #4f4f4f;
 $border-color: #999999;
 $border-color-thin: #f0f0f0;
 
@@ -11,7 +12,6 @@ $link-color: #1d60a3;
 $link-hover-color: #1da388;
 $link-hover-line-color: $link-hover-color;
 $icon-hover-color: $link-hover-color;
-
 
 /* Basic */
 html {
@@ -53,6 +53,319 @@ summary {
 main {
     outline: none;
 }
+
+
+
+
+
+.header {
+    // border: thin dotted red;
+
+    $name-size: 25px;
+    $name-weight: 700;
+    $description-size: 12px;
+    $description-weight: 200;
+
+    $menu-item-size: 15px;
+    $menu-item-weight: 300;
+
+    .title {
+        margin: 30px 0px;
+
+        .name {
+            margin: 0;
+            font-size: $name-size;
+            font-weight: $name-weight;
+        }
+
+        .description {
+            margin-top: 5px;
+            font-size: $description-size;
+            font-weight: $description-weight;
+        }
+
+        a:not(:hover) {
+            color: $text-color;
+            border-bottom: none;
+        }
+
+        a:hover {
+            border-bottom: none;
+        }
+    }
+
+    .navbar {
+        align-self: center;
+
+        a {
+            font-size: $menu-item-size;
+            font-weight: $menu-item-weight;
+        }
+
+        a:not(:hover) {
+            color: $text-color;
+            border-bottom: none;
+        }
+
+        a:hover {
+            border-bottom: none;
+        }
+    }
+}
+
+.squeezed {
+    max-width: 97%;
+    margin: 0px auto 0px;
+}
+
+// base-listing
+.base-listing {
+    // border: 2px dotted red;
+
+    $title-size: 20px;
+    $title-weight: 700;
+    $supporting-information-size: 12px;
+    $supporting-information-weight: 300;
+    $summary-size: 13px;
+    $summary-weight: 400;
+
+    $info-size: 10px;
+    $info-weight: 200;
+    $info-color: $border-color;
+
+    // margin: 0px;
+    padding: 20px 0px;
+
+    a {
+        color: $text-color;
+    }
+
+    // a:active,
+    // a:hover {
+    //     outline: 0;
+    // }
+
+    a:hover,
+    a:focus {
+        color: $link-hover-color;
+        // border-bottom: 1px solid $link-hover-line-color;
+    }
+
+    a:active {
+        color: $link-hover-color;
+        // opacity: 0.9;
+        // border-bottom: 1px solid $link-hover-line-color;
+    }
+
+    a.active {
+        color: $link-hover-color;
+    }
+
+    // img {
+    //     margin: .5em auto 0;
+    // }
+    // h3 {
+    //     margin-block-start: 0.25em;
+    //     margin-block-end: 0;
+    // }
+
+    .title {
+        margin: 0px;
+        padding: 0px;
+        font-size: $title-size;
+        font-weight: $title-weight;
+    }
+
+    .position {
+        margin-top: 5px;
+        margin-bottom: 15px;
+        // padding: 0px;
+        font-size: $supporting-information-size;
+        font-weight: $supporting-information-weight;
+    }
+
+    .summary {
+        p {
+            font-size: $summary-size;
+            margin: 10px 0px;
+            font-weight: $summary-weight;
+        }
+    }
+
+    .info {
+        margin-top: 20px;
+        font-size: $info-size;
+        color: $info-color;
+
+        .date {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .homepage {
+            display: inline-block;
+            white-space: nowrap;
+            // a {
+            //     color: #333333;
+            // }
+            a:hover {
+                // color: $icon-hover-color;
+                // text-decoration: none;
+                border-bottom: none;
+                // transition: all 0.2s linear;
+            }
+        }
+    }
+}
+
+.project-category {
+    $category-size: 15px;
+    $category-weight: 200;
+
+    font-size: $category-size;
+    font-weight: $category-weight;
+}
+
+.transkey {
+    $transkey-color: $border-color-dark;
+    $transkey-size: 12px;
+    $transkey-weight: 200;
+
+    
+    p {
+        margin-top: 50px;
+        margin-bottom: 10px;
+        font-size: $transkey-size;
+        color: $transkey-color;
+        font-weight: $transkey-weight;
+    }
+}
+
+.base-article {
+    $title-size: 30px;
+    $title-weight: 700;
+
+    $supporting-information-size: 12px;
+    $supporting-information-weight: 200;
+
+    $summary-size: 14px;
+    $summary-weight: 500;
+    $summary-color: $border-color-dark;
+    
+    $information-size: 10px;
+    $information-weight: 300;
+    $information-color: $summary-color;
+
+    .article-header {
+
+        .title {
+            margin: 0;
+            font-size: $title-size;
+            font-weight: $title-weight;
+        }
+
+        .position {
+            margin: 0;
+            font-size: $supporting-information-size;
+            font-weight: $supporting-information-weight;
+        }
+
+        .summary {
+            p {
+                font-size: $summary-size;
+                font-weight: $summary-weight;
+            }
+        }
+    }
+
+    .info {
+        // background-color: pink;
+        // margin-top: 20px;
+        font-size: $information-size;
+        font-weight: $information-weight;
+        color: $information-color;
+
+        .date {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .homepage {
+            display: inline-block;
+            white-space: nowrap;
+            // a {
+            //     color: #333333;
+            // }
+            a:hover {
+                // color: $icon-hover-color;
+                // text-decoration: none;
+                border-bottom: none;
+                // transition: all 0.2s linear;
+            }
+        }
+    }
+}
+
+pre {
+    max-width: 100%;
+    overflow: auto;
+    padding: 25px;
+    margin: 35px;
+}
+
+pre,
+kbd,
+code {
+    font-family: ui-monospace,
+        Menlo,
+        Monaco,
+        "Cascadia Mono",
+        "Roboto Mono",
+        "Oxygen Mono",
+        "Ubuntu Monospace",
+        "Source Code Pro",
+        "Fira Mono",
+        "Droid Sans Mono",
+        "Courier New",
+        monospace;
+    font-size: 13px;
+    line-height: 140%;
+    border-radius: 15px;
+}
+
+
+blockquote {
+    border-left: 5px solid #cccccc;
+    padding: 0.1em 1em;
+    margin: 0px 30px;
+}
+
+p,
+ul,
+ol {
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Index-specific styling */
@@ -150,37 +463,6 @@ td {
 }
 
 
-/* Code */
-pre {
-    padding: 1em;
-    background-color: #f1f1f1;
-    max-width: 100%;
-    overflow: auto;
-}
-code,
-pre,
-kbd {
-    font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
-    font-size: 13px;
-    line-height: 140%;
-    border-radius: 15px;
-}
-
-
-/* Styles */
-blockquote {
-    border-left: 5px solid #cccccc;
-    padding: 0.1em 1em;
-    margin-left: 30px;
-}
-
-p {
-    // margin-top: 0.5em;
-    // margin-bottom: 0.5em;
-    // margin-top: 10px;
-    // margin-bottom: 10px;
-    font-size: 15px;
-}
 
 hr {
     height: 1px;
@@ -188,7 +470,10 @@ hr {
     border-top: 1px solid #cccccc;
 }
 
-ul ol, ol ol, ul ul {
+ul ol,
+ol ol,
+ul ul {
+    font-size: 14px;
     margin: 0px 0px;
 }
 
@@ -251,23 +536,23 @@ h1, h2, h3, h4, h5, h6  {
 }
 
 .site-header {
-    // font-size: 1.5em;
     font-size: 30px;
-    font-weight: bolder;
-    font-weight: 800;
-    // margin-block-start: 1em;
-    // white-space: nowrap;
+    font-weight: 300;
+
+    a:hover {
+        border-bottom: none;
+    }
 }
 
 /* Pages */
-main h1 {
-    // margin-top: 1em;
-    font-weight: normal;
-    line-height: 1.1em;
-    margin-bottom: 0.5em;
-    // margin-bottom: 100px;
-    font-size: 15px;
-}
+// main h1 {
+//     // margin-top: 1em;
+//     // font-weight: normal;
+//     // line-height: 1.1em;
+//     // margin-bottom: 0.5em;
+//     // margin-bottom: 100px;
+//     // font-size: 15px;
+// }
 
 .post-short-list:first-of-type {
     margin-top: 100px;
@@ -298,7 +583,7 @@ article header h1 {
 
 article header h2 {
     font-size: 15px;
-    margin-top: -35px;
+    // margin-top: -35px;
     margin-bottom: 10px;
     font-weight: 700;
     color: $a11y-gray;
@@ -316,6 +601,23 @@ article header h2 {
     }
 }
 
+.article-position {
+    margin-top: 0px;
+    font-size: 12px;
+    font-weight: 600;
+    // color: $border-color;
+
+    // a:hover {
+    //     color: $link-hover-color;
+    // }
+}
+
+// .article-position-text {
+//     a:hover {
+//         color: $link-hover-color;
+//     }
+//     // color: $a11y-gray;
+// }
 // .post-short-list
 // .article-info {
 //     // margin-top: 0;

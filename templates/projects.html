@@ -11,20 +11,13 @@
     {% endif %}
 
     {% for category, tag in project_categories %}
-        <h1>{{ category }}</h1>
+        <h1 class="project-category">{{ category }}</h1>
         {% for page in section.pages %}
             {% if page.taxonomies.categories is containing(tag) %}
-                {{ page_macros::project_listing(page=page) }}
+                {{ page_macros::base_listing(page=page) }}
             {% endif %}
         {% endfor %}
     {% endfor %}
-
-    <!-- <h1>{{ trans(key="other", lang=lang) }}</h1>
-    {% for page in section.pages %}
-        {% if page.taxonomies.categories | length == 0 %}
-            {{ page_macros::project_listing(page=page) }}
-        {% endif %}
-    {% endfor %} -->
 
 </main>
 {% endblock content %}

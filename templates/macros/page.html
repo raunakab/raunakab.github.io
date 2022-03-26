@@ -5,6 +5,16 @@
         {% set reading_time = "◦ " ~ page.reading_time ~ " " ~ trans(key="minute", lang=lang) %}
         <div class="article-date">{{ page.date | date(format=trans(key="date_format", lang=lang)) }} {{ reading_time }}</div>
         {% endif %}
+        {% if page.extra.website %}
+        <div class="article-github"> ◦
+            <a href="{{ page.extra.website }}">
+            <span class="icon">
+                <i class="fa fa-home"></i>
+                Homepage
+            </span>
+            </a>
+        </div>
+        {% endif %}
     </div>
 {% endmacro page_info %}
 
@@ -12,11 +22,16 @@
     <article class="post-list">
         <a href="{{ page.permalink }}">
             <header>
-                <h3 class="page-listing">
+                <h3 class="title">
                     {{ page.title }}
                 </h3>
             </header>
 
+            {% if page.extra.position %}
+            <div class="article-position">
+                @ {{ page.extra.position }}
+            </div>
+            {% endif %}
             {% if page.summary %}
             <div class="content post-summary">
                 {{ page.summary | markdown | safe }}
@@ -68,7 +83,7 @@
 {% endmacro page_listing %}
 
 {% macro project_info(page) %}
-<div class="article-info">
+<div class="article-info content">
     {% if page.date %}
     {% set reading_time = "◦ " ~ page.reading_time ~ " " ~ trans(key="minute", lang=lang) %}
     <div class="article-date">{{ page.date | date(format=trans(key="date_format", lang=lang)) }} {{ reading_time }}</div>
@@ -85,3 +100,110 @@
     {% endif %}
 </div>
 {% endmacro project_info %}
+
+<!-- work experience listing macros -->
+{% macro work_experience_listing(page) %}
+<article class="post-list">
+{#    {% if page.extra.featured_image %}
+    <a href="{{ page.permalink }}"><img src="{{ page.permalink }}/{{ page.extra.featured_image }}" alt="{% if page.extra.featured_image_alt %}{{ page.extra.featured_image_alt }}{% else %}{{ page.title }}{% endif %}"/></a>
+    {% endif %}
+#}
+    <a href="{{ page.permalink }}">
+        <header>
+            <h3>
+                {{ page.title }}
+            </h3>
+        </header>
+
+        {% if page.extra.position %}
+        <div class="article-position">
+            <p>@ {{ page.extra.position }}</p>
+        </div>
+        {% endif %}
+        {% if page.summary %}
+        <div class="content post-summary">
+            {{ page.summary | markdown | safe }}
+        </div>
+        {% endif %}
+    </a>
+    {{ self::page_info(page=page) }}
+</article>
+{% endmacro work_experience_listing %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+    The `base-listing` and `base-info` are used to propagate content in lists on the main pages.
+    They are NOT for use when an article is clicked into.
+-->
+{% macro base_listing(page) %}
+    <article class="base-listing">
+        <a href="{{ page.permalink }}">
+            <!-- All pages must have a title -->
+            <div class="title">
+                <header>
+                    <h3 class="title">
+                        {{ page.title }}
+                    </h3>
+                </header>
+            </div>
+
+            <!-- Work experience pages should have a position give -->
+            {% if page.extra.position %}
+            <div class="position">
+                @ {{ page.extra.position }}
+            </div>
+            {% endif %}
+
+            <!-- All pages should have a summary -->
+            {% if page.summary %}
+            <div class="summary">
+                {{ page.summary | markdown | safe }}
+            </div>
+            {% endif %}
+
+        </a>
+
+        <div class="info">
+            {% if page.date %}
+                {% set reading_time = "◦ " ~ page.reading_time ~ " " ~ trans(key="minute", lang=lang) %}
+                <div class="date">{{ page.date | date(format=trans(key="date_format", lang=lang)) }} {{ reading_time }}</div>
+            {% endif %}
+    
+            {% if page.extra.homepage %}
+                <div class="homepage"> ◦
+                    <a href="{{ page.extra.homepage }}">
+                    <span class="icon">
+                        <i class="fa fa-home"></i>
+                        Homepage
+                    </span>
+                    </a>
+                </div>
+            {% endif %}
+
+            <!-- Optional GitHub page -->
+            {% if page.extra.repo_path %}
+                <div class="homepage"> ◦
+                    <a href="{{ page.extra.repo_path }}">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </article>
+{% endmacro base_listing %}
