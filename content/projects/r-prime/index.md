@@ -1,19 +1,21 @@
 +++
-title = "Example software project"
-date = 2021-08-11
+title = "R-Prime"
+date = 2022-03-25
 
 [taxonomies]
-categories = ["software"]
+categories = ["embedded"]
 
 [extra]
-# repo_path = "justint/papaya"
+repo_path = "BEARUBC/r-prime"
 +++
 
-This is my first software project!
+A lightweight, async + multi-threaded, component-based software execution framework (mirroring that of `NASA`'s flight software framework, `f-prime`).
 
 <!-- more -->
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin est augue, pellentesque sit amet nisi ut, viverra vestibulum purus. Quisque ac varius elit. 
+Todo!
+
+<!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin est augue, pellentesque sit amet nisi ut, viverra vestibulum purus. Quisque ac varius elit. 
 
 Praesent vitae pretium lacus, at placerat velit. Nulla feugiat quam eget quam tempus, id vulputate nulla suscipit. Vestibulum porta mollis molestie. In mollis diam et ante varius imperdiet et a elit. Mauris sodales quis nisi nec fringilla. 
 
@@ -25,4 +27,4 @@ Maecenas eget ligula porttitor, egestas orci id, gravida nisl. Aliquam erat volu
 2. Suspendisse mollis ante arcu, sit amet vehicula nisl cursus ac. 
 3. Donec tristique risus dolor, at tristique urna placerat et. 
 
-Nam vel interdum neque. Maecenas laoreet eget enim at rhoncus. Donec posuere diam leo, blandit semper urna semper nec. 
+Nam vel interdum neque. Maecenas laoreet eget enim at rhoncus. Donec posuere diam leo, blandit semper urna semper nec.  -->

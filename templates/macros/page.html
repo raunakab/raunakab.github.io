@@ -73,40 +73,13 @@
     {% set reading_time = "◦ " ~ page.reading_time ~ " " ~ trans(key="minute", lang=lang) %}
     <div class="article-date">{{ page.date | date(format=trans(key="date_format", lang=lang)) }} {{ reading_time }}</div>
     {% endif %}
-    <!-- <div class="article-taxonomies">
-        {% if page.taxonomies.categories %}
-        ◦
-        <ul class="article-categories">
-            {% for cat in page.taxonomies.categories %}
-            <li><a href="{{ get_taxonomy_url(kind="categories", name=cat, lang=lang) | safe }}">{{ cat }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% if page.taxonomies.tags %}
-        <ul class="article-tags">
-            {% for tag in page.taxonomies.tags %}
-            <li><a href="{{ get_taxonomy_url(kind="tags", name=tag, lang=lang) | safe }}">#{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div> -->
-    {% if get_env(name=config.extra.env, default="stage") == "prod" and page.extra.repo_path %}
-    {% set response = load_data(url="https://api.github.com/repos/" ~ page.extra.repo_path, format="json") %}
+    {% if page.extra.repo_path %}
     <div class="article-github"> ◦
         <a href="{{ 'https://www.github.com/' ~ page.extra.repo_path }}">
         <span class="icon">
             <i class="fab fa-github"></i>
+            GitHub
         </span>
-        <span class="icon is-large">
-            <i class="fa fas fa-star"></i>
-        </span>
-        {{ response.stargazers_count }}
-        {% if response.forks_count > 0 %}
-            <span class="icon is-large">
-                <i class="fa fas fa-code-branch"></i>
-            </span>
-            {{ response.forks_count }}
-        {% endif %}
         </a>
     </div>
     {% endif %}

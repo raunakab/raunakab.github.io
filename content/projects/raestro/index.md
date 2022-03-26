@@ -13,11 +13,6 @@ A lightweight software interface written in Rust for the Micro-Maestro (6-channe
 
 <!-- more -->
 
-<!-- ### Links
-You can easily find documentation and installation guidelines for `raestro` here:
-1. [Cargo](https://link-url-here.org)
-2. [Docs.rs](https://link-url-here.org) -->
-
 {{ img(path="./micro-maestro.jpg", alt="") }}
 
 ### Description
@@ -120,36 +115,9 @@ Our team plans on cleaning `raestro` up.
 This includes automating the code formatting process, as opposed to manual formatting (`cargo fmt` was a feature I learned after the release of `raestro v0.3.0`).
 We also want to bolster the error-handling mechanisms in the package (start using more `?`'s to handle errors where applicable).
 
-<!-- The Micro-Maestro uses UART serial pins to communicate with an external microcomputer.
-So using the UART GPIO pins on the Raspberry Pi 4 Model B (which was the main computer system onboard our robotic prosthesis), we connected that to the Maestro.
-This is where Raestro comes in; Raestro provides a dead-simple API to send protocols implementing the standardized Pololu protocol over UART serial.
-Essentially, all of that lower-level serial communications is neatly abstracted away into nice little API calls.
-This project was so helpful for us, we decided to release it as UBC Bionics' very first Open-Source-Software Project, licensed under the MIT OSS License!
-Up till today, Raestro is on version 0.3.0 and has over 80 downloads!
+### Links
+You can easily find documentation and installation guidelines for `raestro` here:
+1. [Cargo](https://crates.io/crates/raestro)
+2. [Docs.rs](https://docs.rs/raestro/0.3.0/raestro/)
 
-While being a wonderfully helpful OSS project and something that I'm proud of, Raestro also managed to teach me another thing:
-API Design.
-Yes, developing a library and constructing APIs for end-users to interact with is an art; it's not something easily tackle-able.
-Our team struggled for weeks on end just trying to solidify a design; we would always try to implement a design, but would end up asking ourselves "But wait, this design doesn't make sense", or "Oh shoot, we forgot about this crucial use-case".
-In the end though, it was a wonderful project to participate in developing, and it will always be marked as my first truly Open-Source-Software Project.
-Please check out the above links for more information on Raestro, and leave a star on the Github page!
-
-As a final note, with regards to the name "Raestro", it is derived as a portmanteau of "Rust" and "Maestro". -->
-
-<!-- This is my first software project!
-asdf
-more
-asdf
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin est augue, pellentesque sit amet nisi ut, viverra vestibulum purus. Quisque ac varius elit. 
-
-Praesent vitae pretium lacus, at placerat velit. Nulla feugiat quam eget quam tempus, id vulputate nulla suscipit. Vestibulum porta mollis molestie. In mollis diam et ante varius imperdiet et a elit. Mauris sodales quis nisi nec fringilla. 
-
-    Aenean sed fermentum nunc, a consectetur magna.
-
-Maecenas eget ligula porttitor, egestas orci id, gravida nisl. Aliquam erat volutpat. Sed dapibus felis quis lacus dignissim condimentum aliquam et orci. 
-
-1. Sed rutrum velit et purus volutpat rutrum. 
-2. Suspendisse mollis ante arcu, sit amet vehicula nisl cursus ac. 
-3. Donec tristique risus dolor, at tristique urna placerat et. 
-
-Nam vel interdum neque. Maecenas laoreet eget enim at rhoncus. Donec posuere diam leo, blandit semper urna semper nec.  -->
+As always, the link to the GitHub can be found at the top of the page.
