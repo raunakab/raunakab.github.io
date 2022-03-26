@@ -1,7 +1,9 @@
 {% import "macros/page.html" as page_macros %}
 {% extends "index.html" %}
 
-{% block title %}{{ trans(key="category", lang=lang) }}: {{ term.name }} - {{ config.title }}{% endblock title %}
+{% block title %}
+    {{ trans(key="category", lang=lang) }}: {{ term.name }} - {{ config.title }}
+{% endblock title %}
 
 {% block content %}
 <h1>{{ trans(key="category", lang=lang) }}: {{ term.name }}</h1>
@@ -10,7 +12,7 @@
 </div>
 
 {% for page in term.pages %}
-{{ page_macros::page_listing(page=page) }}
+{{ page_macros::base_listing(page=page) }}
 {% endfor %}
 
 {% endblock content %}

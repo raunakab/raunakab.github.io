@@ -1,7 +1,9 @@
 {% import "macros/page.html" as page_macros %}
 {% extends "index.html" %}
 
-{% block title %}{{ trans(key="categories", lang=lang) }} - {{ config.title }}{% endblock title %}
+{% block title %}
+    {{ trans(key="categories", lang=lang) }} - {{ config.title }}
+{% endblock title %}
 
 {% block content %}
 <h1>{{ trans(key="categories", lang=lang) }}</h1>
