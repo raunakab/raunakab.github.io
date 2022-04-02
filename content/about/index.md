@@ -2,6 +2,8 @@
 title = "About Me"
 render = true
 template = "about.html"
+
+insert_anchor_links = "right"
 +++
 
 {{ img(path="@/about/me-and-fam.jpg", alt="It's me!", caption="Me, on the far left, alongside my younger brother and mom.") }}
