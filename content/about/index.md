@@ -46,7 +46,7 @@ I played street hockey until the street lights were the only sources illuminatin
 I ate lots and lots of chocolate in front of the TV until my parents found me passed out the next morning (I have a remarkable sweet tooth).
 I played hockey and basketball religiously, the latter of which I continued to play throughout high school and university, and still continue to play to this day.
 
-My dad passed away when I was young.
+My dad passed away when I was 12 years old.
 My engineering and mathematical spirit can be largely attested to him.
 His passion to his craft was simply admirable.
 

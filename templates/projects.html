@@ -13,7 +13,7 @@
     {% for category, tag in project_categories %}
         <h1 class="project-category">{{ category }}</h1>
         {% for page in section.pages %}
-            {% if page.taxonomies.categories is containing(tag) %}
+            {% if page.taxonomies.categories is containing(tag) and not page.extra.ignore %}
                 {{ page_macros::base_listing(page=page) }}
             {% endif %}
         {% endfor %}

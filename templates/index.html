@@ -26,7 +26,9 @@
 
                 {% set subsec_section = get_section(path=subsec_path) %}
                 {% for page in subsec_section.pages | slice(end=subsec.recent_items) %}
-                    {{ page_macros::base_listing(page=page) }}
+                    {% if not page.extra.ignore %}
+                        {{ page_macros::base_listing(page=page) }}
+                    {% endif %}
                 {% endfor %}
             </section>
         {% endfor %}

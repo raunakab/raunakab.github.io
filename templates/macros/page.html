@@ -49,7 +49,24 @@
         <div class="info">
             {% if page.date %}
                 {% set reading_time = "◦ " ~ page.reading_time ~ " " ~ trans(key="minute", lang=lang) %}
-                <div class="date">{{ page.date | date(format=trans(key="date_format", lang=lang)) }} {{ reading_time }}</div>
+                {% if page.extra.end_date %}
+                    <div class="date">
+                        {{ page.date | date(format=trans(key="date_format", lang=lang)) }}
+                        to
+                        {{ page.extra.end_date | date(format=trans(key="date_format", lang=lang)) }}
+                        {{ reading_time }}
+                    </div>
+                {% elif page.extra.current %}
+                <div class="date">
+                    {{ page.date | date(format=trans(key="date_format", lang=lang)) }}
+                    - Current
+                </div>
+                {% else %}
+                    <div class="date">
+                        {{ page.date | date(format=trans(key="date_format", lang=lang)) }}
+                        {{ reading_time }}
+                    </div>
+                {% endif %}
             {% endif %}
     
             {% if page.extra.homepage %}
@@ -66,7 +83,7 @@
             <!-- Optional GitHub page -->
             {% if page.extra.repo_path %}
                 <div class="homepage"> ◦
-                    <a href="{{ page.extra.repo_path }}">
+                    <a href="{{ 'https://www.github.com/' ~ page.extra.repo_path }}">
                     <span class="icon">
                         <i class="fab fa-github"></i>
                         GitHub

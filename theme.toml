@@ -13,7 +13,6 @@ demo = "https://justintennant.me/papaya"
 # Use snake_casing to be consistent with the rest of Zola
 [extra]
 env = "$ZOLA_ENV"
-papaya_date_format = "%e %B %Y"
 papaya_menu_links = []
 
 [extra.images]
