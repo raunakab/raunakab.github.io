@@ -18,3 +18,10 @@ Finish writings for:
     - SQL (Postgres)
     - Frontend
     - Devops
+
+### Resume
+- Add a link to my resume (available on a Google Drive link)
+
+### UI
+- Add a "more" button on the main page to indicate that there are more than 3 articles available to read
+    - Have this more button link to the specific page
