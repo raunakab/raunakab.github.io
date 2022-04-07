@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Raunak Bhagat</title>
+	<subtitle>Software Engineering + Computer Science + Mathematics</subtitle>
+	<link href="https://raunakab.github.io/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://raunakab.github.io"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-04-06T00:00:00+00:00</updated>
+	<id>https://raunakab.github.io/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Building a Social Media Platform (Part I): The Backend</title>
+		<published>2022-04-06T00:00:00+00:00</published>
+		<updated>2022-04-06T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/blog/wavy-backend/" type="text/html"/>
+		<id>https://raunakab.github.io/blog/wavy-backend/</id>
+		<content type="html">&lt;p&gt;The technical details behind the development going on at &lt;em&gt;Wavy&lt;&#x2F;em&gt;.
+This time, focusing on how to build a robust backend API.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;prelude&quot;&gt;Prelude&lt;a class=&quot;zola-anchor&quot; href=&quot;#prelude&quot; aria-label=&quot;Anchor link for: prelude&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;This article will focus on explaining the technical details and engineering choices behind the backend API service provided by &lt;em&gt;Wavy&lt;&#x2F;em&gt;.
+Although some may use this as a &amp;quot;tutorial&amp;quot; of some sorts to aid in their own development, I have not necessarily aimed for this article to be of that nature.
+I am moreso aiming for it to provide a brief glimpse into the inner machinery behind the API service our team over at &lt;em&gt;Wavy&lt;&#x2F;em&gt; have engineered.
+As a result, you will notice that I frame questions as &amp;quot;&lt;em&gt;Why&lt;&#x2F;em&gt; did we choose &lt;em&gt;X&lt;&#x2F;em&gt;?&amp;quot; as opposed to &amp;quot;What &lt;em&gt;X&lt;&#x2F;em&gt; should &lt;em&gt;you&lt;&#x2F;em&gt; choose?&amp;quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;Needless to say, this article will be clearly opinionated.
+That is a natural consequence of its purpose.
+There are points to which &lt;em&gt;I&lt;&#x2F;em&gt;, personally, find the pros to outweigh the cons, whereas you may feel differently.
+Regardless, I have chosen the path which I believe to be the best for our team.&lt;&#x2F;p&gt;
+&lt;p&gt;With that being said, it should be fairly trivial to &lt;em&gt;convert&lt;&#x2F;em&gt; this article into a tutorial.
+Whenever you happen to come across a question of the form &amp;quot;Why did we choose &lt;em&gt;X&lt;&#x2F;em&gt;?&amp;quot;, just convert it into a question of the form &amp;quot;What &lt;em&gt;X&lt;&#x2F;em&gt; should I choose for this problem?&amp;quot; and then search it up.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;a class=&quot;zola-anchor&quot; href=&quot;#table-of-contents&quot; aria-label=&quot;Anchor link for: table-of-contents&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;I will speak on the following topics to some moderate level of detail:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Language + Toolset Choice
+&lt;ul&gt;
+&lt;li&gt;Why we decided to choose &lt;code&gt;rust&lt;&#x2F;code&gt; as our primary backend language&lt;&#x2F;li&gt;
+&lt;li&gt;Why we chose the &lt;code&gt;actix-web&lt;&#x2F;code&gt; framework&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;API Creation and Structuring
+&lt;ul&gt;
+&lt;li&gt;How we structures our APIs&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;API Versioning Practices
+&lt;ul&gt;
+&lt;li&gt;How we versions their APIs&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Securing APIs
+&lt;ul&gt;
+&lt;li&gt;How to think in terms of security&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;API Error Handling&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;language-toolset-choice&quot;&gt;Language + Toolset Choice&lt;a class=&quot;zola-anchor&quot; href=&quot;#language-toolset-choice&quot; aria-label=&quot;Anchor link for: language-toolset-choice&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;h4 id=&quot;language-choice&quot;&gt;Language Choice&lt;a class=&quot;zola-anchor&quot; href=&quot;#language-choice&quot; aria-label=&quot;Anchor link for: language-choice&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h4&gt;
+&lt;p&gt;Picking a primary programming language for development is a fairly important up-front choice I had to make when starting development on the backend.
+The languages I was comfortable with were &lt;code&gt;rust&lt;&#x2F;code&gt;, &lt;code&gt;node.js&lt;&#x2F;code&gt;, &lt;code&gt;typescript&lt;&#x2F;code&gt;, &lt;code&gt;python&lt;&#x2F;code&gt;, &lt;code&gt;racket&lt;&#x2F;code&gt;, &lt;code&gt;java&lt;&#x2F;code&gt;, &lt;code&gt;c&lt;&#x2F;code&gt;, and &lt;code&gt;c++&lt;&#x2F;code&gt;.
+Out of the above, I put into serious considerations into &lt;code&gt;rust&lt;&#x2F;code&gt;, &lt;code&gt;node.js&lt;&#x2F;code&gt;, and &lt;code&gt;typescript&lt;&#x2F;code&gt; primarily due to my work-experiences involving them.&lt;&#x2F;p&gt;
+&lt;p&gt;Below, I categorize what I find to be the pros and cons of each language.
+Note that, once again, this is an opinionated article.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;node-js&quot;&gt;&lt;code&gt;node.js&lt;&#x2F;code&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#node-js&quot; aria-label=&quot;Anchor link for: node-js&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Feature&lt;&#x2F;th&gt;&lt;th&gt;Pros&lt;&#x2F;th&gt;&lt;th&gt;Cons&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Large Ecosystem&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Existing implementations ready to go&lt;&#x2F;td&gt;&lt;td&gt;Potentially unreliable dependencies and large dependency graphs&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Lambdas&#x2F;Closures&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Easy to use; provides the ability to program in a higher-order fashion&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Soft Typing&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Easy to modify existing code without major refactoring elsewhere; faster prototyping speed&lt;&#x2F;td&gt;&lt;td&gt;Generally difficult to ramp-up incoming members on; prone to sneaky breaking changes (if a function type is changed, one may forget to update all callers of that function)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Await&#x2F;Async&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Built-in async runtime; existing async ecosystem is large&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;h3 id=&quot;rust&quot;&gt;&lt;code&gt;rust&lt;&#x2F;code&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#rust&quot; aria-label=&quot;Anchor link for: rust&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Feature&lt;&#x2F;th&gt;&lt;th&gt;Pros&lt;&#x2F;th&gt;&lt;th&gt;Cons&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Semi-Large Ecosystem&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Existing implementations ready to go (not as big as &lt;code&gt;node&lt;&#x2F;code&gt;&#x27;s)&lt;&#x2F;td&gt;&lt;td&gt;Potentially unreliable dependencies and large dependency graphs&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Lambdas&#x2F;Closures&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Somewhat straightforward to use in most cases&lt;&#x2F;td&gt;&lt;td&gt;Since closures cannot be explicitly typed, it can be harder returning them from functions; some difficulties with higher-order programming and async&#x2F;await&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Strong Typing&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Stronger data guarantees (crucial for a data-driven application); easier to ramp-up new recruits since explicit typing helps in learning; changes to types can be statically found&lt;&#x2F;td&gt;&lt;td&gt;Modifications require rewrites across a larger surface area&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Await&#x2F;Async&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;td&gt;Non-standardized async engines (different libraries use different, non-compatible engines); Generally difficult to with alongside &lt;code&gt;rust&lt;&#x2F;code&gt;&#x27;s ownership&#x2F;borrowing paradigm&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Functional Programming Roots&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Mutability is discouraged&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Verbosity&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;td&gt;Static typing, implementing traits, etc. forces one to write lots of boilerplate; general difficulties with closure programming leads to resorting to macros to solve verbosity issues (which then bumps up codegen time)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;h3 id=&quot;typescript&quot;&gt;&lt;code&gt;typescript&lt;&#x2F;code&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#typescript&quot; aria-label=&quot;Anchor link for: typescript&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Feature&lt;&#x2F;th&gt;&lt;th&gt;Pros&lt;&#x2F;th&gt;&lt;th&gt;Cons&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Similar to &lt;code&gt;node&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Essentially inherits most of &lt;code&gt;node&lt;&#x2F;code&gt;&#x27;s benefits and drawbacks &lt;em&gt;except&lt;&#x2F;em&gt; for typing&lt;&#x2F;td&gt;&lt;td&gt;-&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Semi-Strong Typing&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;Semi-strong typing helps catch errors at compile-time as opposed to run-time; changes to function types can be statically determinable&lt;&#x2F;td&gt;&lt;td&gt;Types are still highly coercible&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;p&gt;For all accounts and purposes, &lt;code&gt;typescript&lt;&#x2F;code&gt; seemed to be the best solution.
+However, I had to take into consideration 3 additional factors:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;I had more experience with &lt;code&gt;rust&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;rust&lt;&#x2F;code&gt; has a functional-oriented syntax as opposed to &lt;code&gt;typescript&lt;&#x2F;code&gt;&#x27;s imperatively-oriented.&lt;&#x2F;li&gt;
+&lt;li&gt;The pool of &lt;code&gt;rust&lt;&#x2F;code&gt; developers, although notably smaller, are more mathematically minded. This is an aspect of the community I value.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;All things considered, I decided that the pros of &lt;code&gt;rust&lt;&#x2F;code&gt; still outweighed the pros of &lt;code&gt;typescript&lt;&#x2F;code&gt;, and thus moved forward with it.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;toolset-choice&quot;&gt;Toolset Choice&lt;a class=&quot;zola-anchor&quot; href=&quot;#toolset-choice&quot; aria-label=&quot;Anchor link for: toolset-choice&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h4&gt;
+&lt;p&gt;As per the web-framework, I chose the &lt;code&gt;actix-web&lt;&#x2F;code&gt; web-framework.
+It was the largest web-framework at the time, and seemed most high-level enough for me.
+However, our domain logic is separate enough from the actual API delivery logic that we can switch out to a new framework fairly quickly, if need be.&lt;&#x2F;p&gt;
+&lt;p&gt;All other tools being used in the project are essentially standardized as the go-tos in the community.
+As such, I will not discuss them further.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;api-creation-and-structuring&quot;&gt;API Creation and Structuring&lt;a class=&quot;zola-anchor&quot; href=&quot;#api-creation-and-structuring&quot; aria-label=&quot;Anchor link for: api-creation-and-structuring&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;api-versioning-practices&quot;&gt;API Versioning Practices&lt;a class=&quot;zola-anchor&quot; href=&quot;#api-versioning-practices&quot; aria-label=&quot;Anchor link for: api-versioning-practices&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;API versioning is an extremely important facet to bear in mind during development.
+You need a mechanism in place to allow clients to be able to hit previous API interfaces while also allowing new ones to be developed and released &lt;em&gt;&lt;strong&gt;at the same time&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Over at &lt;em&gt;Wavy&lt;&#x2F;em&gt;, I&#x27;ve gone through 2 iterations of API versioning mechanisms, the first of which has been killed and replaced with the second.
+The two techniques that were being employed were:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Prepending a version number to each &lt;code&gt;http&lt;&#x2F;code&gt; path (i.e., &lt;code&gt;&#x2F;1.0.0&#x2F;users&#x2F;me&lt;&#x2F;code&gt; would request version &lt;code&gt;1.0.0&lt;&#x2F;code&gt; of the &lt;code&gt;&#x2F;users&#x2F;me&lt;&#x2F;code&gt; API)&lt;&#x2F;li&gt;
+&lt;li&gt;Injecting the requested API version into the &lt;code&gt;http&lt;&#x2F;code&gt; body with the header-name being &lt;code&gt;VERSION&lt;&#x2F;code&gt; (i.e., an entry of the form &lt;code&gt;VERSION: 1.2.3&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h5 id=&quot;prepending-the-api-version&quot;&gt;Prepending the API Version&lt;a class=&quot;zola-anchor&quot; href=&quot;#prepending-the-api-version&quot; aria-label=&quot;Anchor link for: prepending-the-api-version&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;The former was the initial technique of choice.
+However, in order to implement this, a &lt;em&gt;lot&lt;&#x2F;em&gt; of copy-pasting would have needed to be done.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, let&#x27;s say I had a directory named &lt;code&gt;1.3.10&lt;&#x2F;code&gt; which contained all of the source code pertaining to API version &lt;code&gt;1.3.10&lt;&#x2F;code&gt;.
+Now consider that I wanted to release a modified API with version &lt;code&gt;2.0.0&lt;&#x2F;code&gt;.
+Sticking to my own rules, I would create a new directory called &lt;code&gt;2.0.0&lt;&#x2F;code&gt;, and then essentially &lt;em&gt;copy&lt;&#x2F;em&gt; over all of the files from &lt;code&gt;1.3.10&lt;&#x2F;code&gt; into &lt;code&gt;2.0.0&lt;&#x2F;code&gt; and make my modifications there.&lt;&#x2F;p&gt;
+&lt;p&gt;This was too messy of a solution, and I required something more maintainable.&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;injecting-api-version-into-http-body&quot;&gt;Injecting API Version into &lt;code&gt;http&lt;&#x2F;code&gt; Body&lt;a class=&quot;zola-anchor&quot; href=&quot;#injecting-api-version-into-http-body&quot; aria-label=&quot;Anchor link for: injecting-api-version-into-http-body&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;I switched over to having the client inject their requested API version into the body of the &lt;code&gt;http&lt;&#x2F;code&gt; message.&lt;&#x2F;p&gt;
+&lt;p&gt;Implementation-wise, I have a &lt;code&gt;Version&lt;&#x2F;code&gt; enum containing all the different API versions being supported.
+Upon receiving an &lt;code&gt;http&lt;&#x2F;code&gt;-request, the &lt;code&gt;actix-web&lt;&#x2F;code&gt; middleware kicks in; it parses the request object, pulls out the requested API version (as a string), and then deserializes it into a variant of &lt;code&gt;Version&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;This has a dually beneficial feature in that if no requested API version is provided, the latest stable API release will be artifically injected into the request and used by the appropriate handler.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;securing-apis&quot;&gt;Securing APIs&lt;a class=&quot;zola-anchor&quot; href=&quot;#securing-apis&quot; aria-label=&quot;Anchor link for: securing-apis&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;api-error-handling&quot;&gt;API Error Handling&lt;a class=&quot;zola-anchor&quot; href=&quot;#api-error-handling&quot; aria-label=&quot;Anchor link for: api-error-handling&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>From Startup to Liftoff</title>
+		<published>2022-04-01T00:00:00+00:00</published>
+		<updated>2022-04-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/blog/startup-to-production/" type="text/html"/>
+		<id>https://raunakab.github.io/blog/startup-to-production/</id>
+		<content type="html">&lt;p&gt;The journey of my startup, &lt;em&gt;Wavy&lt;&#x2F;em&gt;, from its initial stages to its current stature.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;prelude&quot;&gt;Prelude&lt;a class=&quot;zola-anchor&quot; href=&quot;#prelude&quot; aria-label=&quot;Anchor link for: prelude&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The world of startups is interesting.
+One may encounter a tight-knit group of engineers and artists working harmoniously to produce the world&#x27;s next hottest technology.
+Or one may find a steaming pile of garbage.&lt;&#x2F;p&gt;
+&lt;p&gt;I can definitively say that I have experienced both.
+Whether that is a positive or a negative is a question I am still grappling with today.
+Regardless, in all accounts, I have been able to learn skills which I would have otherwise never learned.&lt;&#x2F;p&gt;
+&lt;p&gt;I am grateful for what I experienced.
+Without it, I would not have been able to hold my own in my current venture.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-early-stages&quot;&gt;The Early Stages&lt;a class=&quot;zola-anchor&quot; href=&quot;#the-early-stages&quot; aria-label=&quot;Anchor link for: the-early-stages&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;As fitting as it sounds, &lt;em&gt;Wavy&lt;&#x2F;em&gt; was founded in my mom&#x27;s basement.
+A sweltering heatwave drove me down there, as it did to many others in the summer of 2021 in Calgary, Alberta.&lt;&#x2F;p&gt;
+&lt;p&gt;My current business partner arranged a meeting with myself and 2 others to discuss an idea which he had been mulling over in his mind for a while.
+This idea, however, was &lt;em&gt;&lt;strong&gt;far&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt; from what &lt;em&gt;Wavy&lt;&#x2F;em&gt; would one day materialize into, as is the case for many startups at this early stage of ideation.
+Unfortunately, the exact details as to what the original idea was seem to escape me at the current moment.&lt;&#x2F;p&gt;
+&lt;p&gt;Truthfully speaking, the other 2 invitees and I were not very intrigued by the proposed idea, but the fear of missing out enticed us enough to stick around for a couple more meetings.
+And it was during the course of these subsequent calls that the current-day &lt;em&gt;Wavy&lt;&#x2F;em&gt; started finally taking form: a UBC exlcusive application geared towards helping connect clubs and organizations to the vast amount of students on campus, as well as providing a medium for students to meet each other.&lt;&#x2F;p&gt;
+&lt;p&gt;The idea seemed plausible for our team and (arguably more importantly) attractive to a larger audience.
+And so our small group of 4 began development.&lt;&#x2F;p&gt;
+&lt;p&gt;However, as the codebase grew and our idea started settling into its niche marketplace, life started catching up with 2 of our members.
+Due to extraneous reasons of which I will lay no mention in this article, they were unable to continue forth in development, and thus departed from the team.
+This left myself and my partner stranded with an incomplete codebase and an overambitious deadline for release.&lt;&#x2F;p&gt;
+&lt;p&gt;More pressingly, my partner was non-technical.
+I was left at the helm of the ship, steering alone.&lt;&#x2F;p&gt;
+&lt;p&gt;A more seasoned developer would have no fret; full-stack engineering is a topic which has an unimaginable wealth of online resources available, and experience is the name of the game.
+I, however, was by no means considered seasoned.
+I would have hardly even called myself sufficient.&lt;&#x2F;p&gt;
+&lt;p&gt;But a quite interesting feature of my personality is my need to prove people wrong.
+And, boy, was this a perfect opportunity.&lt;&#x2F;p&gt;
+&lt;p&gt;So I gripped the steering wheel tighter and metalled the pedal (or however that saying goes).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;current-stage&quot;&gt;Current Stage&lt;a class=&quot;zola-anchor&quot; href=&quot;#current-stage&quot; aria-label=&quot;Anchor link for: current-stage&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Fast-forward to the current day, and it has been around 8 months since &lt;em&gt;Wavy&lt;&#x2F;em&gt;&#x27;s original ideation.
+And although the platform is still under major development, I have more or less adapted to the role of steering this ship.&lt;&#x2F;p&gt;
+&lt;p&gt;As I continue to refine my skills and chip away at the software engineering feat of releasing a product, I have noticed an interesting phenomena start to take place: I have started to gain confidence in my engineering decisions.&lt;&#x2F;p&gt;
+&lt;p&gt;I can quantitatively write programs faster now.
+I can efficiently reason about the benefits and pitfalls of an implementation to a reasonable degree &lt;em&gt;just off the top of my head&lt;&#x2F;em&gt;.
+Yes, I do occassionaly make mistakes, and no, I am nowhere close to knowing all there is about the various implementations and optimizations that exist, but I have no doubt a vastly more rich understanding of how software is orchestrated and released.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, our team has expanded to include one additional member who&#x27;s currently working on the frontend development alongisde myself.
+His addition to our team has considerably lightened my load and stress.
+He is also astoundingly talented at frontend design.&lt;&#x2F;p&gt;
+&lt;p&gt;Despite the situation in the prior section seeming grim, our team has successfully overcome those hurdles.
+We are now slated for a release this upcoming summer.
+And we are now more optimistic in our future than ever.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;As we gear up for our first public release, I think it would be wise for me to document my decision choices and any difficulties encountered.
+This can simultaneously function as a wonderful mechanism for tracking my progress as a SWE, as well as a subtle way to show off my skills.&lt;&#x2F;p&gt;
+&lt;p&gt;As such, I will write and release articles pertaining to the entire technical stack being developed at &lt;em&gt;Wavy&lt;&#x2F;em&gt;.
+Hopefully readers will be able to gain insight into the functionings of a full-stack application.&lt;&#x2F;p&gt;
+&lt;p&gt;And I hope you, reader, have been successfully captured by the story of &lt;em&gt;Wavy&lt;&#x2F;em&gt;.
+And given the fact that you have read until here, I have a feeling that maybe you did.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>R-Prime</title>
+		<published>2022-03-25T00:00:00+00:00</published>
+		<updated>2022-03-25T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/projects/r-prime/" type="text/html"/>
+		<id>https://raunakab.github.io/projects/r-prime/</id>
+		<content type="html">&lt;p&gt;A lightweight, async + multi-threaded, component-based software execution framework (mirroring that of &lt;code&gt;NASA&lt;&#x2F;code&gt;&#x27;s flight software framework, &lt;code&gt;f-prime&lt;&#x2F;code&gt;).&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Initial Commit</title>
+		<published>2022-03-24T00:00:00+00:00</published>
+		<updated>2022-03-24T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/blog/initial-commit/" type="text/html"/>
+		<id>https://raunakab.github.io/blog/initial-commit/</id>
+		<content type="html">&lt;p&gt;Hello, again, world.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;hello-world&quot;&gt;Hello World&lt;a class=&quot;zola-anchor&quot; href=&quot;#hello-world&quot; aria-label=&quot;Anchor link for: hello-world&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Firstly, my motivation for starting a blog would be fitting.&lt;&#x2F;p&gt;
+&lt;p&gt;A few of my classmates and many of my professors each maintain their own blogs.
+Their own personal reasons obviously elude me, but guessing at the obvious: penning down your ideas is a great form of advertisement of your expertise and skill (especially useful for technical people).&lt;&#x2F;p&gt;
+&lt;p&gt;Another subtle, yet important, reason would be to do it just for the practice.
+The more you write, the easier it becomes to formulate thoughts and expressions.
+Communication is an important necessity in any field; what good is a good idea if you can&#x27;t convince others that it&#x27;s a good idea?&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;thematics&quot;&gt;Thematics&lt;a class=&quot;zola-anchor&quot; href=&quot;#thematics&quot; aria-label=&quot;Anchor link for: thematics&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Thematically, out of the blog posts I have run across, some discuss serious and technical topics only, while others strike a balance between personal stories and technical articles.
+As for myself, I wish to aim for the latter; I want to be able to discuss technical topics, as this will be, in large parts, a technical blog, but I also wish to discuss lighter topics, such as my personal habits, day-to-day happenings, etc.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;goals&quot;&gt;Goals&lt;a class=&quot;zola-anchor&quot; href=&quot;#goals&quot; aria-label=&quot;Anchor link for: goals&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Clarity and smoothness in transitioning between thoughts is my primary goal.
+Namely, I want to be able to segue into different topics in a way which is elegant to the reader; concluding the previous thought while setting the stage for the next.
+I do, however, realize that this is a non-measurable goal (or may be measurable, but a pragmatic tool which can quantitatively analyze language sentiment and structure is not yet something which exists with today&#x27;s technology -- yes, I know NLP tools exist, but they&#x27;re not solving &lt;em&gt;this&lt;&#x2F;em&gt; exact problem).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;frequency&quot;&gt;Frequency&lt;a class=&quot;zola-anchor&quot; href=&quot;#frequency&quot; aria-label=&quot;Anchor link for: frequency&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;As previously mentioned, writing is a skill which is perfected through practice (as are quite many skills in the world).
+I will try to write at least one blog once a week, however mundane and unrelatable as it may be.
+I can make no promises one each post&#x27;s length, but I will try to keep the quality consistent (to whatever measure of consistency that I choose, a criteria which is subject to my discretion... after all, this is &lt;em&gt;my&lt;&#x2F;em&gt; blog).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;final-remarks&quot;&gt;Final Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#final-remarks&quot; aria-label=&quot;Anchor link for: final-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Thank you.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Raestro v0.3.0</title>
+		<published>2022-03-24T00:00:00+00:00</published>
+		<updated>2022-03-24T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/projects/raestro/" type="text/html"/>
+		<id>https://raunakab.github.io/projects/raestro/</id>
+		<content type="html">&lt;p&gt;A lightweight software interface written in Rust for the Micro-Maestro (6-channel) Servo Motor Controller.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+
+
+
+
+
+
+
+
+    
+    
+    
+
+
+
+    
+    
+    
+
+    
+        
+    
+
+&lt;figure &gt;
+    &lt;img src=&quot;https:&amp;#x2F;&amp;#x2F;raunakab.github.io&amp;#x2F;processed_images&amp;#x2F;2e1986c3b7da095900.jpg&quot; class=&quot;&quot; &#x2F;&gt;
+    
+&lt;&#x2F;figure&gt;
+&lt;h3 id=&quot;description&quot;&gt;Description&lt;a class=&quot;zola-anchor&quot; href=&quot;#description&quot; aria-label=&quot;Anchor link for: description&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;raestro&lt;&#x2F;code&gt; is a high-level library exposing an API to easily control the Pololu &lt;code&gt;micro-maestro 6-channel servo motor controller&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;The &lt;code&gt;micro-maestro&lt;&#x2F;code&gt; is, in essence, a board which can convert high-level messages implementing a protocol specification into analog signals and send them down a channel to a specific, connected servo motor.
+It eases up the controlling logic of controlling multiple servo motors at once; the board can abstract many of those details away.&lt;&#x2F;p&gt;
+&lt;!-- The catch, however, is that some client needs to be able to implement the protocol correctly in order to communicate with the `maestro`.
+If you find yourself without a client, you are out of luck.
+As I will shortly explain, this is the exact situation myself and my embedded team over at UBC Bionics found ourselves in. --&gt;
+&lt;!-- `raestro` is just a client correctly implementing the protocol specification. --&gt;
+&lt;p&gt;&lt;code&gt;raestro&lt;&#x2F;code&gt; is just a client which allows one to easily communicate with the &lt;code&gt;maestro&lt;&#x2F;code&gt; using the &lt;code&gt;rust&lt;&#x2F;code&gt; programming language.
+More formally, it is a correct implementation of the client-side of the &lt;code&gt;pololu protocol&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;It allows for one to write code like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; maestro: Maestro = Maestro::new();
+&lt;&#x2F;span&gt;&lt;span&gt;maestro.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;start&lt;&#x2F;span&gt;&lt;span&gt;(BaudRates::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;BR_115200&lt;&#x2F;span&gt;&lt;span&gt;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; channel: Channels = Channels::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;C_0&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; speed0 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; speed1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;140&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; target_min = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3968&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; target_max = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8000&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; sleep_time = Duration::from_millis(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1000&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u64&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;loop &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    maestro.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set_speed&lt;&#x2F;span&gt;&lt;span&gt;(channel, speed0).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    maestro.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set_target&lt;&#x2F;span&gt;&lt;span&gt;(channel, target_min).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    thread::sleep(sleep_time);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    maestro.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set_speed&lt;&#x2F;span&gt;&lt;span&gt;(channel, speed1).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    maestro.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;set_target&lt;&#x2F;span&gt;&lt;span&gt;(channel, target_max).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    thread::sleep(sleep_time);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;and get a result like &lt;a href=&quot;https:&#x2F;&#x2F;drive.google.com&#x2F;file&#x2F;d&#x2F;1EpPhS04D_GeyJOxh5xaBX24GbiYPdXZv&#x2F;view?resourcekey&quot;&gt;this&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;motivation&quot;&gt;Motivation&lt;a class=&quot;zola-anchor&quot; href=&quot;#motivation&quot; aria-label=&quot;Anchor link for: motivation&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The Raestro project was born out of necessity, as most software tools&#x2F;libraries are.&lt;&#x2F;p&gt;
+&lt;p&gt;In Jan 2021, the UBC Bionics Embedded Systems Team migrated over from &lt;code&gt;c++&lt;&#x2F;code&gt; to &lt;code&gt;rust&lt;&#x2F;code&gt;, on account of &lt;code&gt;rust&lt;&#x2F;code&gt;&#x27;s major safety guarantees.
+&lt;code&gt;c++&lt;&#x2F;code&gt;, being as featureful as it is with regards to its ecosystem and mature developers, already contained a client.
+Unfortunately, we could not have said the same thing for &lt;code&gt;rust&lt;&#x2F;code&gt; at the time.
+&lt;code&gt;crates.io&lt;&#x2F;code&gt; contained no packages implementing a correct client-side for the &lt;code&gt;micro-maestro&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Our team had options for our next step: either try to port over a &lt;code&gt;c++&lt;&#x2F;code&gt; implementation into a &lt;code&gt;rust&lt;&#x2F;code&gt; codebase (an option which proved to be more difficult said than done), or build our own client.&lt;&#x2F;p&gt;
+&lt;p&gt;Given the nature of this article, you may have probably already guessed the outcome: we decided to build our own client.&lt;&#x2F;p&gt;
+&lt;p&gt;We also appropriately named it &lt;code&gt;raestro&lt;&#x2F;code&gt;, serving as a portmanteau of &lt;code&gt;rust&lt;&#x2F;code&gt; and &lt;code&gt;maestro&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;!-- ### Difficulties --&gt;
+&lt;h3 id=&quot;technical-details&quot;&gt;Technical Details&lt;a class=&quot;zola-anchor&quot; href=&quot;#technical-details&quot; aria-label=&quot;Anchor link for: technical-details&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;maestro&lt;&#x2F;code&gt; uses &lt;code&gt;UART&lt;&#x2F;code&gt; serial communication to interface with an external client.
+In our case, the our client would be the &lt;code&gt;raspberry pi model 4&lt;&#x2F;code&gt;, situated on the bionic arm (and roughly &lt;code&gt;3 inches&lt;&#x2F;code&gt; away from the &lt;code&gt;maestro&lt;&#x2F;code&gt;, a detail which will be important when discussing latency in communication).&lt;&#x2F;p&gt;
+&lt;p&gt;We connected the &lt;code&gt;rx&lt;&#x2F;code&gt; and &lt;code&gt;tx&lt;&#x2F;code&gt; pins of the &lt;code&gt;maestro&lt;&#x2F;code&gt; to the &lt;code&gt;tx&lt;&#x2F;code&gt; and &lt;code&gt;rx&lt;&#x2F;code&gt; pins of our on-board computer: the &lt;code&gt;raspberry pi 4&lt;&#x2F;code&gt;.
+WIth the utilization of a &lt;code&gt;rust&lt;&#x2F;code&gt; software package named &lt;code&gt;rppal&lt;&#x2F;code&gt;, we sent digital messages implementing the &lt;code&gt;pololu protocol&lt;&#x2F;code&gt; specification across the channel to the &lt;code&gt;maestro&lt;&#x2F;code&gt;, where there the &lt;code&gt;maestro&lt;&#x2F;code&gt; would parse the message (using its own internal logic) and execute the corresponding action.&lt;&#x2F;p&gt;
+&lt;p&gt;As per the &lt;code&gt;pololu protocol&lt;&#x2F;code&gt;, our client exposes APIs to set the position, speed, and acceleration of any servo amongst the 6 possibly connected servos.
+It also exposes APIs to get any of this information regarding to a specific channel, as well as any errors that may have propagated during execution.&lt;&#x2F;p&gt;
+&lt;p&gt;For sending and receiving data, we have a default buffer size of &lt;code&gt;512 bytes&lt;&#x2F;code&gt;.
+As according to the &lt;code&gt;pololu protocol&lt;&#x2F;code&gt;&#x27;s specification, this is the largest message size that the &lt;code&gt;maestro&lt;&#x2F;code&gt; can receive&#x2F;send.&lt;&#x2F;p&gt;
+&lt;p&gt;Our APIs perform a blocking, timeout read while fetching data from the &lt;code&gt;maestro&lt;&#x2F;code&gt;.
+Although this does block the current thread from execution, the &lt;code&gt;maestro&lt;&#x2F;code&gt; is simply connected and is located roughly &lt;code&gt;3 inches&lt;&#x2F;code&gt; away.
+It is safe to say that we are not altogether too concerned with propagation delays.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;open-sourcing&quot;&gt;Open Sourcing&lt;a class=&quot;zola-anchor&quot; href=&quot;#open-sourcing&quot; aria-label=&quot;Anchor link for: open-sourcing&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;As many beginners in the software field, we tend to casually utilize and take for granted the legals rights given to us by Open Source Licensing.
+With the creation and completion of this project, I was more than willing to release it as an open source software package, bound with the &lt;code&gt;MIT&lt;&#x2F;code&gt; and &lt;code&gt;Open BSD&lt;&#x2F;code&gt; licenses.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;raestro&lt;&#x2F;code&gt; serves as an important milestone in my software development career.
+It marks my first semi-professionally developed open source project, complete with documentation and a dedicated index for it reserved in &lt;code&gt;crates.io&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;It also marks my first open source project to get &lt;code&gt;1&lt;&#x2F;code&gt; download.
+It also marks my first open source project to surpass &lt;code&gt;100&lt;&#x2F;code&gt; downloads.&lt;&#x2F;p&gt;
+&lt;p&gt;Although this pales in comparison to older, more veteran developers and software packages available in the &lt;code&gt;rust&lt;&#x2F;code&gt; registry, I still consider this a major milestone in my career.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;final-note-and-the-future-of-raestro&quot;&gt;Final Note and the Future of &lt;code&gt;raestro&lt;&#x2F;code&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#final-note-and-the-future-of-raestro&quot; aria-label=&quot;Anchor link for: final-note-and-the-future-of-raestro&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;raestro&lt;&#x2F;code&gt; is still in development.
+Although it is a &lt;em&gt;correct&lt;&#x2F;em&gt; implementation of the &lt;code&gt;pololu protocol&lt;&#x2F;code&gt;, it is by no means a &lt;em&gt;complete&lt;&#x2F;em&gt; implementation.
+There are still many specifications which are yet to be implemented.&lt;&#x2F;p&gt;
+&lt;p&gt;Furthermore, as with any software library, the API itself can be cleaned up.
+I undertook the writing of this client a mere &lt;code&gt;2&lt;&#x2F;code&gt; months into my journey into &lt;code&gt;rust&lt;&#x2F;code&gt;.
+I can safely say that I have vastly improved as a &lt;code&gt;rust&lt;&#x2F;code&gt; engineer, as well as an overall software developer since then (at the time of writing this post, I have been using &lt;code&gt;rust&lt;&#x2F;code&gt; for over &lt;code&gt;1&lt;&#x2F;code&gt; year now).&lt;&#x2F;p&gt;
+&lt;p&gt;Our team plans on cleaning &lt;code&gt;raestro&lt;&#x2F;code&gt; up.
+This includes automating the code formatting process, as opposed to manual formatting (&lt;code&gt;cargo fmt&lt;&#x2F;code&gt; was a feature I learned after the release of &lt;code&gt;raestro v0.3.0&lt;&#x2F;code&gt;).
+We also want to bolster the error-handling mechanisms in the package (start using more &lt;code&gt;?&lt;&#x2F;code&gt;&#x27;s to handle errors where applicable).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;links&quot;&gt;Links&lt;a class=&quot;zola-anchor&quot; href=&quot;#links&quot; aria-label=&quot;Anchor link for: links&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You can easily find documentation and installation guidelines for &lt;code&gt;raestro&lt;&#x2F;code&gt; here:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;crates.io&#x2F;crates&#x2F;raestro&quot;&gt;Cargo&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.rs&#x2F;raestro&#x2F;0.3.0&#x2F;raestro&#x2F;&quot;&gt;Docs.rs&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;As always, the link to the GitHub can be found at the top of the page.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Hygge</title>
+		<published>2021-09-01T00:00:00+00:00</published>
+		<updated>2021-09-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/work_experience/hygge/" type="text/html"/>
+		<id>https://raunakab.github.io/work_experience/hygge/</id>
+		<content type="html">&lt;p&gt;Blockchain-backed energy trading and EV charging marketplace developed in Java, with external infrastructure developed in Angular and Javascript.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;about&quot;&gt;About&lt;a class=&quot;zola-anchor&quot; href=&quot;#about&quot; aria-label=&quot;Anchor link for: about&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;As the world of green energy becomes more prominent, more and more individuals are purchasing solar panels.
+However, when batteries fill up, the panels are rendered obsolete as the energy they absorb is no longer usefully stored.
+Hygge provides a unique solution to this problem: using underlying infrastructure, you can trade packets of energy on the free market to others who want it.
+The energy transactions are then recorded using a blockchain ledger.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-did&quot;&gt;What I did&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-did&quot; aria-label=&quot;Anchor link for: what-i-did&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Developed python scripts for pulling data from a GCP database to enter into another database hosted in India&lt;&#x2F;li&gt;
+&lt;li&gt;Developed a client-support web-application (written in &lt;code&gt;angular.js&lt;&#x2F;code&gt;) for employees to easily observe and resolve&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;what-i-learned&quot;&gt;What I learned&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-learned&quot; aria-label=&quot;Anchor link for: what-i-learned&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Scripting and batch data transferring&lt;&#x2F;li&gt;
+&lt;li&gt;How to develop applications in &lt;code&gt;angular.js&lt;&#x2F;code&gt;
+&lt;ul&gt;
+&lt;li&gt;Structure of an &lt;code&gt;angular&lt;&#x2F;code&gt; project&lt;&#x2F;li&gt;
+&lt;li&gt;Data management in &lt;code&gt;angular&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;technologies-that-i-used&quot;&gt;Technologies that I used&lt;a class=&quot;zola-anchor&quot; href=&quot;#technologies-that-i-used&quot; aria-label=&quot;Anchor link for: technologies-that-i-used&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;python&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;angular.js&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;GCP (Google Cloud Platform)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Thanks, Hygge, for a great 4 months!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Wavy</title>
+		<published>2021-06-01T00:00:00+00:00</published>
+		<updated>2021-06-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/work_experience/wavy/" type="text/html"/>
+		<id>https://raunakab.github.io/work_experience/wavy/</id>
+		<content type="html">&lt;p&gt;&lt;em&gt;UBC&lt;&#x2F;em&gt; exclusive application for finding events and friends on campus.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;prelude&quot;&gt;Prelude&lt;a class=&quot;zola-anchor&quot; href=&quot;#prelude&quot; aria-label=&quot;Anchor link for: prelude&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;em&gt;Wavy&lt;&#x2F;em&gt; is a startup that my partner and I cofounded in 2021.
+As the currently acting CTO at &lt;em&gt;Wavy&lt;&#x2F;em&gt;, I&#x27;m developing the entire application-stack for our business.
+This is, as need not be said, a difficult endeavour; producing a full-stack application is no light work.&lt;&#x2F;p&gt;
+&lt;p&gt;However, an important part of the development lifecycle is not the destination, but rather the journey one embarks on.
+As I continue to develop the software for my startup, I continually develop &lt;em&gt;myself&lt;&#x2F;em&gt; tenfold.&lt;&#x2F;p&gt;
+&lt;p&gt;As a result, I have recently started documenting my experiences, ranging from the technical skills of lifting a startup to production, as well as the soft skills of managing one&#x27;s mental health while doing so.&lt;&#x2F;p&gt;
+&lt;p&gt;You can read more about it &lt;a href=&quot;&#x2F;work_experience&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;about&quot;&gt;About&lt;a class=&quot;zola-anchor&quot; href=&quot;#about&quot; aria-label=&quot;Anchor link for: about&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-did&quot;&gt;What I did&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-did&quot; aria-label=&quot;Anchor link for: what-i-did&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-learned&quot;&gt;What I learned&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-learned&quot; aria-label=&quot;Anchor link for: what-i-learned&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;backend&quot;&gt;Backend&lt;a class=&quot;zola-anchor&quot; href=&quot;#backend&quot; aria-label=&quot;Anchor link for: backend&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;database-mysql&quot;&gt;Database (&lt;code&gt;MySQL&lt;&#x2F;code&gt;)&lt;a class=&quot;zola-anchor&quot; href=&quot;#database-mysql&quot; aria-label=&quot;Anchor link for: database-mysql&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;frontend&quot;&gt;Frontend&lt;a class=&quot;zola-anchor&quot; href=&quot;#frontend&quot; aria-label=&quot;Anchor link for: frontend&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;devops-cloud-aws&quot;&gt;Devops + Cloud (AWS)&lt;a class=&quot;zola-anchor&quot; href=&quot;#devops-cloud-aws&quot; aria-label=&quot;Anchor link for: devops-cloud-aws&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;technologies-that-i-worked-with&quot;&gt;Technologies that I worked with&lt;a class=&quot;zola-anchor&quot; href=&quot;#technologies-that-i-worked-with&quot; aria-label=&quot;Anchor link for: technologies-that-i-worked-with&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Ontraccr</title>
+		<published>2021-05-01T00:00:00+00:00</published>
+		<updated>2021-05-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/work_experience/ontraccr/" type="text/html"/>
+		<id>https://raunakab.github.io/work_experience/ontraccr/</id>
+		<content type="html">&lt;p&gt;Software automation and workflow management in Javascript and React.js.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;about&quot;&gt;About&lt;a class=&quot;zola-anchor&quot; href=&quot;#about&quot; aria-label=&quot;Anchor link for: about&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Ontraccr is a startup based in Vancouver, British Columbia which provides an easy-to-use time-management application for construction companies.
+The construction industry is a space in which the power and ease of technology is not quite present.
+Many companies in this field stick to outdated methodologies for managing projects, and these outdated behaviours have significant negative impacts on their efficiencies.
+This is where Ontraccr comes in; it&#x27;s a web-application + mobile-application architecture in which managers can more easily communicate with their on-premise workers, assign tasks, and manage productivity.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-did&quot;&gt;What I did&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-did&quot; aria-label=&quot;Anchor link for: what-i-did&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Implemented feature to recursively move and archive folders&#x2F;files in the in-app file-system&lt;&#x2F;li&gt;
+&lt;li&gt;Implemented a &lt;em&gt;divisions&lt;&#x2F;em&gt; feature to restrict access to folders based off user&#x27;s position in company&lt;&#x2F;li&gt;
+&lt;li&gt;Performed integration of Typescript into existing Javascript backend codebase to increase code maintainability and allow for warnings&#x2F;errors to be caught during compile-time rather than runtime&lt;&#x2F;li&gt;
+&lt;li&gt;Introduced linters and coding-style configuration files (ESLint + Prettier) to force an agreed-upon style on the backend codebase for cleaner code maintainability + readability&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;what-i-learned&quot;&gt;What I learned&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-learned&quot; aria-label=&quot;Anchor link for: what-i-learned&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Given the technical range of this position (full-stack engineering) I was able to touch essentially the entire web-stack for Ontraccr.
+As such, I have divided up each skill accordingly for ease of reading.&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;backend&quot;&gt;Backend&lt;a class=&quot;zola-anchor&quot; href=&quot;#backend&quot; aria-label=&quot;Anchor link for: backend&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;How to develop backend RESTful APIs to perform &lt;code&gt;CRUD&lt;&#x2F;code&gt; operations on a database&lt;&#x2F;li&gt;
+&lt;li&gt;Middleware processing and overall preprocessing techniques applied to each incoming request
+&lt;ul&gt;
+&lt;li&gt;Stateless authentication using &lt;code&gt;JWT&lt;&#x2F;code&gt;&#x27;s&lt;&#x2F;li&gt;
+&lt;li&gt;Websockets integration for communicating with external services&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Outbound requests and outgoing middleware postprocessing techniques (i.e., insertion of default data, etc.)&lt;&#x2F;li&gt;
+&lt;li&gt;External services integration
+&lt;ul&gt;
+&lt;li&gt;Sentry integration to provide insights into backend crashes, etc.&lt;&#x2F;li&gt;
+&lt;li&gt;AWS S3 for media storage&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h5 id=&quot;database-mysql&quot;&gt;Database (&lt;code&gt;MySQL&lt;&#x2F;code&gt;)&lt;a class=&quot;zola-anchor&quot; href=&quot;#database-mysql&quot; aria-label=&quot;Anchor link for: database-mysql&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;How to interact with a &lt;code&gt;SQL&lt;&#x2F;code&gt; database from a web backend
+&lt;ul&gt;
+&lt;li&gt;Query formation + optimization&lt;&#x2F;li&gt;
+&lt;li&gt;Simple &lt;code&gt;CRUD&lt;&#x2F;code&gt; queries&lt;&#x2F;li&gt;
+&lt;li&gt;Advanced left, right, and inner joins to avoid expensive for-loop queries&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Data organization
+&lt;ul&gt;
+&lt;li&gt;I.e., composite primary keys for relationships between 2 or more tables&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Data integrity
+&lt;ul&gt;
+&lt;li&gt;Non-nullable constraints&lt;&#x2F;li&gt;
+&lt;li&gt;Check constraints (to perform prevalidation of data before inserts&#x2F;updates)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;SQL&lt;&#x2F;code&gt; triggers&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;SQL&lt;&#x2F;code&gt; functions&lt;&#x2F;li&gt;
+&lt;li&gt;Foreign keys + cascading on deletion of a foreign key&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h5 id=&quot;frontend&quot;&gt;Frontend&lt;a class=&quot;zola-anchor&quot; href=&quot;#frontend&quot; aria-label=&quot;Anchor link for: frontend&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;How to propagate changes in the frontend to a backend API service&lt;&#x2F;li&gt;
+&lt;li&gt;Wireframing tools and techniques&lt;&#x2F;li&gt;
+&lt;li&gt;How to develop a &lt;code&gt;react.js&lt;&#x2F;code&gt; application
+&lt;ul&gt;
+&lt;li&gt;Basic structure&lt;&#x2F;li&gt;
+&lt;li&gt;Higher-order components (for avoid code duplication)&lt;&#x2F;li&gt;
+&lt;li&gt;Styling and overall design in &lt;code&gt;react.js&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Hooks for running pieces of logic during mounting, dismounting etc.&lt;&#x2F;li&gt;
+&lt;li&gt;Redux for implementing a centralized data-store&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Overall UI&#x2F;UX skills
+&lt;ul&gt;
+&lt;li&gt;How to develop new UIs to match an existing platform&#x27;s style and taste&lt;&#x2F;li&gt;
+&lt;li&gt;UI scheme aggregation into a global file&lt;&#x2F;li&gt;
+&lt;li&gt;Optimal placement of information for user consumption&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h5 id=&quot;devops-cloud-aws&quot;&gt;Devops + Cloud (AWS)&lt;a class=&quot;zola-anchor&quot; href=&quot;#devops-cloud-aws&quot; aria-label=&quot;Anchor link for: devops-cloud-aws&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker for containerization&lt;&#x2F;li&gt;
+&lt;li&gt;Bitbucket pipelines for automating testing, code validation, and deployments&lt;&#x2F;li&gt;
+&lt;li&gt;AWS
+&lt;ul&gt;
+&lt;li&gt;EC2 services to host infrastructure and code&lt;&#x2F;li&gt;
+&lt;li&gt;ECR for container storage and deployment to an ECS orchestrated cluster&lt;&#x2F;li&gt;
+&lt;li&gt;S3 for media storage&lt;&#x2F;li&gt;
+&lt;li&gt;SES for email services&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;technologies-that-i-worked-with&quot;&gt;Technologies that I worked with&lt;a class=&quot;zola-anchor&quot; href=&quot;#technologies-that-i-worked-with&quot; aria-label=&quot;Anchor link for: technologies-that-i-worked-with&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Node.js&lt;&#x2F;code&gt; backend + &lt;code&gt;hapi&lt;&#x2F;code&gt; web-framework&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;React.js&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;React Native&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;docker&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;git&lt;&#x2F;code&gt; &#x2F; Bitbucket&lt;&#x2F;li&gt;
+&lt;li&gt;Jira + Confluence&lt;&#x2F;li&gt;
+&lt;li&gt;Sonarcloud&lt;&#x2F;li&gt;
+&lt;li&gt;AWS
+&lt;ul&gt;
+&lt;li&gt;EC2&lt;&#x2F;li&gt;
+&lt;li&gt;ECS&lt;&#x2F;li&gt;
+&lt;li&gt;ECR&lt;&#x2F;li&gt;
+&lt;li&gt;SES&lt;&#x2F;li&gt;
+&lt;li&gt;S3&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;HTTP&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;JWT&lt;&#x2F;code&gt;&#x27;s&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;websockets&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;There are so many things that I feel I need to say about this position.&lt;&#x2F;p&gt;
+&lt;p&gt;Firstly, I have never seen myself grow so much as a SWE anywhere else.
+I went from &lt;em&gt;&lt;strong&gt;not&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt; knowing what an &lt;code&gt;HTTP&lt;&#x2F;code&gt; message was at the beginning of May to implementing &lt;em&gt;full-stack&lt;&#x2F;em&gt; features (such as task-tracking, similar to the tasks one can assign in Jira) at the end of August. I was successfully able to touch essentially the &lt;em&gt;entire&lt;&#x2F;em&gt; tech-stack at Ontraccr; from frontend to backend, devops, and cloud.&lt;&#x2F;p&gt;
+&lt;p&gt;All in the span of 4 months!&lt;&#x2F;p&gt;
+&lt;p&gt;A large portion of my growth is attested to my manager, who I will refer to as Sean for the rest of this post.&lt;&#x2F;p&gt;
+&lt;p&gt;Sean and I had these weekly one-on-ones&#x27;s first thing in the mornings on Mondays.
+These meetings acted as a retroactive look into the past week; a mechanism for us to observe our hurdles and successes so that we could continue growing as a team.&lt;&#x2F;p&gt;
+&lt;p&gt;As I tended to be, I asked a &lt;em&gt;lot&lt;&#x2F;em&gt; of questions during these meetings: &amp;quot;How do you lead a team?&amp;quot;, &amp;quot;How did you learn about &lt;em&gt;X&lt;&#x2F;em&gt; and &lt;em&gt;Y&lt;&#x2F;em&gt;?&amp;quot;, &amp;quot;What drew you to the startup environment in the first place&amp;quot;, etc.
+And to all these questions, impressively, Sean would have an answer ready to go.
+But what blew me away was the sheer magnitude of his two-cents on the matter.
+He would respond with these nuggets of wisdom, casually dropping them as if they were no more than a small crumb of truth.&lt;&#x2F;p&gt;
+&lt;p&gt;We would easily fill up the 1 hour timeslot by just talking about our lives, software engineering, and the startup world in general (I, myself, at that time had also started a small business with my partner).&lt;&#x2F;p&gt;
+&lt;p&gt;And as per the nuggets of wisdom he would so easily drop, I leave you, reader, with my favourite quote he told me during one session:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If you want to build a ship, don&#x27;t drum up the people to gather wood, divide the work, and give orders.&lt;&#x2F;p&gt;
+&lt;p&gt;Instead, teach them to yearn for the vast and endless sea.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Antoine de Saint-Exupéry&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>UBC Bionics</title>
+		<published>2021-05-01T00:00:00+00:00</published>
+		<updated>2021-05-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/work_experience/ubc-bionics/" type="text/html"/>
+		<id>https://raunakab.github.io/work_experience/ubc-bionics/</id>
+		<content type="html">&lt;p&gt;A student led, biomedical engineering team.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;about&quot;&gt;About&lt;a class=&quot;zola-anchor&quot; href=&quot;#about&quot; aria-label=&quot;Anchor link for: about&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;UBC Bionics is a student-led engineering and research team situated at the University of British Columbia.
+Our specialty is in cross-domain engineering to solve biomedical problems.
+Currently, our team is in the process of finishing the designing of a robotic prosthetic arm utilized by amputees.
+We have partnered with multiple clinics across Vancouver, BC, as well as many research labs situated at UBC to continue our growth and engineering processes.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-did&quot;&gt;What I did&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-did&quot; aria-label=&quot;Anchor link for: what-i-did&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-learned&quot;&gt;What I learned&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-learned&quot; aria-label=&quot;Anchor link for: what-i-learned&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Todo!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;technologies-that-i-used&quot;&gt;Technologies that I used&lt;a class=&quot;zola-anchor&quot; href=&quot;#technologies-that-i-used&quot; aria-label=&quot;Anchor link for: technologies-that-i-used&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;rust&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;cargo&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;c&lt;&#x2F;code&gt; + &lt;code&gt;c++&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;raspberry pi model 4&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;ssh&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;AWS
+&lt;ul&gt;
+&lt;li&gt;EC2&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;a-note-on-systems-design&quot;&gt;A Note on Systems Design&lt;a class=&quot;zola-anchor&quot; href=&quot;#a-note-on-systems-design&quot; aria-label=&quot;Anchor link for: a-note-on-systems-design&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;While working as a software engineer here, I was able to observe an interesting phenomena.
+All software systems, regardless of whether that be embedded, cloud, or what have you, converge to a similar design.
+Namely, this design revolves around taking the system in question, splitting it into subsystems, and designing some sort of messaging system between them.
+This effectively divides the system into modular, reusable compartments which, by themselves, are much easier to test.&lt;&#x2F;p&gt;
+&lt;p&gt;You can see this phenomena occurring in cloud-systems design: an application starts out as a monolithic binary; one large piece of software all developed in one codebase running forever.
+But as we &amp;quot;upgrade&amp;quot; this design, we tend to think of splitting it up in order to reduce volume and increase surface area.
+So that&#x27;s exactly what we do; we effectively perform a splitting up of this system into relevant subservices and label each component a &amp;quot;microservice&amp;quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;And what&#x27;s the most interesting is how our embedded systems team, a team which is, for all accounts and measures, orthogonal to cloud-systems engineering, essentially &lt;em&gt;reinvented&lt;&#x2F;em&gt; this exact design.
+We started out with a simple while-loop which, with each iteration, performed some form of check or action.
+But as our system started expanding and becoming more complex, we started dividing specific pieces of logic into separate components.
+So how would these separate components interact with one another?
+Well with some sort of internal messaging system, of course!&lt;&#x2F;p&gt;
+&lt;p&gt;And there it is.
+This is, in essence, &lt;em&gt;exactly&lt;&#x2F;em&gt; the design behind a cloud microserviced architecture.
+We had reinvented this exact phenomena, just in an embedded flavour.&lt;&#x2F;p&gt;
+&lt;p&gt;Some may consider this redundant.
+&amp;quot;Oh, you did a lot more work than was necessary&amp;quot;.
+However, this sort of reinvention is something that I am proud of.
+My team and I were able to solve a great problem, with very little guidance, and approach a solution largely used in industry today.
+For what it&#x27;s worth, that sort of ideation and brainstorming helped me develop my skills more than any online article or tutorial ever could.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;UBC Bionics is the team at which I have achieved many of my biggest early-career milestones.
+This was the place I released my first open-source software.
+This was also my first time using &lt;code&gt;git&lt;&#x2F;code&gt; in a large, non-academic environment.
+And finally, this was where I was exposed to my current favourite programming language, &lt;code&gt;rust&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve seen this team evolve from a misshaped team with very little direction to a blooming organization with clear goals and milestones.&lt;&#x2F;p&gt;
+&lt;p&gt;And I&#x27;m glad that I was a part of that ride!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Samsung Electronics</title>
+		<published>2019-09-01T00:00:00+00:00</published>
+		<updated>2019-09-01T00:00:00+00:00</updated>
+		<link href="https://raunakab.github.io/work_experience/samsung/" type="text/html"/>
+		<id>https://raunakab.github.io/work_experience/samsung/</id>
+		<content type="html">&lt;p&gt;SDK Testing and Internal Applications Development in Java.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h3 id=&quot;about&quot;&gt;About&lt;a class=&quot;zola-anchor&quot; href=&quot;#about&quot; aria-label=&quot;Anchor link for: about&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Of course, Samsung needs no introduction.
+Their products are internationally known and used.&lt;&#x2F;p&gt;
+&lt;p&gt;The specific product that I worked on was &lt;em&gt;Samsung Knox&lt;&#x2F;em&gt;, a &amp;quot;cutting-edge security platform for mobile experience embedded in your Samsung Galaxy device&amp;quot;.
+In essence, Samsung chipsets contain additional circuitry to provide tighter data security and integrity.
+As a result, developers may also obtain (premium) access to a proprietary SDK to help them interact with this chipset and develop applications utilizing it.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-did&quot;&gt;What I did&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-did&quot; aria-label=&quot;Anchor link for: what-i-did&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Developed internal applications to test the Samsung Knox SDK
+&lt;ul&gt;
+&lt;li&gt;Implemented features such as restriciting applications, all the way to geotracking a person&#x27;s phone and turning off, for example, cellular data when within a 5km radius of a location&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Worked with external businesses and partners to resolve their issues and expedite their development process using the Knox SDK&lt;&#x2F;li&gt;
+&lt;li&gt;During my internship, another Knox team needed help with the release of the &lt;em&gt;Knox Parter Program&lt;&#x2F;em&gt;
+&lt;ul&gt;
+&lt;li&gt;Helped that team in the testing of their website and platform&lt;&#x2F;li&gt;
+&lt;li&gt;Performed UX testing to spot places where users may have a difficult experience interacting with the product&lt;&#x2F;li&gt;
+&lt;li&gt;Performed UI testing to spot design elements which were broken or not that well designed&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;what-i-learned&quot;&gt;What I learned&lt;a class=&quot;zola-anchor&quot; href=&quot;#what-i-learned&quot; aria-label=&quot;Anchor link for: what-i-learned&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Team-wide &lt;code&gt;git&lt;&#x2F;code&gt; usage (as opposed to &lt;code&gt;git&lt;&#x2F;code&gt; used in an academic setting)&lt;&#x2F;li&gt;
+&lt;li&gt;Android application development
+&lt;ul&gt;
+&lt;li&gt;Application build processes&lt;&#x2F;li&gt;
+&lt;li&gt;How screens are built&lt;&#x2F;li&gt;
+&lt;li&gt;How to switch between screens&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;technologies-that-i-worked-with&quot;&gt;Technologies that I worked with&lt;a class=&quot;zola-anchor&quot; href=&quot;#technologies-that-i-worked-with&quot; aria-label=&quot;Anchor link for: technologies-that-i-worked-with&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Java&lt;&#x2F;li&gt;
+&lt;li&gt;Gradle&lt;&#x2F;li&gt;
+&lt;li&gt;git &#x2F; GitHub (Enterprise)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;closing-remarks&quot;&gt;Closing Remarks&lt;a class=&quot;zola-anchor&quot; href=&quot;#closing-remarks&quot; aria-label=&quot;Anchor link for: closing-remarks&quot;&gt;🔗&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Coming into this position, I had had no industry experience as of yet.
+I experienced my first rampup, my first team meeting, my confusing bug, and endless design reviews with my coworkers.&lt;&#x2F;p&gt;
+&lt;p&gt;And as I mature and continue growing as a SWE, I will always look back to this experience and marvel at how far I&#x27;ve come and what I&#x27;m capable of doing.
+To a new engineer, the world is teeming full of questions and thoughts; Samsung will always be my first stepping-stone to understanding all of the chaos around me.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;ve also made some wonderful friends there, some of whom I&#x27;ve developed a close friendship with and continue to talk to daily, even 2 years later!&lt;&#x2F;p&gt;
+&lt;p&gt;Thanks to the amazing Samsung Knox team @ Vancouver for a wonderful 8 months!&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>
