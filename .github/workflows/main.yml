@@ -1,4 +1,4 @@
-name: Build and deploy on push
+name: Build and deploy to gh-pages
 
 on:
   push:
@@ -6,12 +6,15 @@ on:
       - master
 
 jobs:
-  build:
-    name: zbrox/zola-deploy-action
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: zbrox/zola-deploy-action
-      uses: zbrox/zola-deploy-action@master
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build-and-deploy
+        uses: shalzz/zola-deploy-action@v0.17.2
+        env:
+          PAGES_BRANCH: master
+          BUILD_DIR: .
+          TOKEN: ${{ secrets.PUBLIC_TOKEN }}
+          REPOSITORY: raunakab/raunakab.github.io
