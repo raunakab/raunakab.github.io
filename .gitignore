@@ -1,0 +1,6 @@
+# zola
+/public
+/static/processed_images
+
+# macos
+.DS_Store

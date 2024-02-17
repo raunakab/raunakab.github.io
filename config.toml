@@ -1,0 +1,11 @@
+theme = "lightspeed"
+base_url = "https://example.com"
+compile_sass = true
+build_search_index = true
+
+title = "@rabh"
+description = "Personal blog"
+
+[[extra.footer_links]]
+url = "$BASE_URL/about"
+name = "About"
