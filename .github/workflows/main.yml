@@ -1,4 +1,4 @@
-name: Zola on GitHub Pages
+name: Build and deploy Zola website on GitHub Pages
 
 on: 
  push:
@@ -6,8 +6,7 @@ on:
    - master
 
 jobs:
-  build:
-    name: Publish site
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout main
