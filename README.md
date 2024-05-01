@@ -1,7 +1,7 @@
 # Personal Website + Blog
 
 Structure:
-```txt
+```
 /
 |- content
     |- pages
