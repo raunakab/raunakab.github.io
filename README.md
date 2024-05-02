@@ -1,6 +1,13 @@
 # Personal Website + Blog
+Source code for my own website and blog.
+Should act as a resume for potential recruiters/employers as well as a storage for ideas and posts.
 
-The structure of this project:
+Built using [`Zola`](https://www.getzola.org).
+
+Based off of the [`hook`](https://www.getzola.org/themes/hook).
+Original license is still maintained [here](./themes/hook/LICENSE).
+
+## Structure
 ```
 /
 |- content
@@ -18,6 +25,3 @@ The structure of this project:
     |- hook
         |- ...
 ```
-
-Based off of the [`hook`](https://www.getzola.org/themes/hook).
-Original license is still maintained [here](./themes/hook/LICENSE).
