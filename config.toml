@@ -5,7 +5,6 @@ compile_sass = true
 build_search_index = false
 
 title = "@rabh"
-description = "Description"
 highlight_code = true
 highlight_theme = "agola-dark"
 
