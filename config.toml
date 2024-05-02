@@ -7,5 +7,5 @@ title = "@rabh"
 description = "Personal blog"
 
 [[extra.footer_links]]
-url = "$BASE_URL/about"
 name = "About"
+url = "$BASE_URL/about"
