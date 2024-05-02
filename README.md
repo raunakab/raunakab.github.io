@@ -20,4 +20,4 @@ The structure of this project:
 ```
 
 Based off of the [`hook`](https://www.getzola.org/themes/hook).
-Original license is still maintained [here](./themes/hook/LICENSE.md).
+Original license is still maintained [here](./themes/hook/LICENSE).
