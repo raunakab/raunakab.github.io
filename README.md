@@ -1,26 +1,23 @@
 # Personal Website + Blog
 
-Structure of the project:
+The structure of this project:
 ```
 /
 |- content
-    |- pages
-        # Contains information about myself
-        |- about.md
-
-    # All blog entries
-    |- ${YYYY}-{MM}-{DD}-{NAME1}.md
-    |- ...
-    |- ${YYYY}-{MM}-{DD}-{NAMEn}.md
-
-    # content root
+    # root
     |- _index.md
 
+    # contains all blog posts
+    |- blogs
+        |- _index.md
+        |- ${YYYY.MM.DD}-{VERSION-1}-{NAME-1}.md
+        |- ...
+        |- ${YYYY.MM.DD}-{VERSION-n}-{NAME-n}.md
+
 |- themes
-    |- lightspeed
-        |- # All html + styles required for this theme
+    |- hook
         |- ...
 ```
 
-Based off of the [`lightspeed`](https://www.getzola.org/themes/lightspeed).
-Original license is copied [here](./LICENSE.md).
+Based off of the [`hook`](https://www.getzola.org/themes/hook).
+Original license is still maintained [here](./themes/hook/LICENSE.md).
