@@ -1,6 +1,6 @@
 # Personal Website + Blog
 
-Structure:
+Structure of the project:
 ```
 /
 |- content
@@ -21,3 +21,6 @@ Structure:
         |- # All html + styles required for this theme
         |- ...
 ```
+
+Based off of the [`lightspeed`](https://www.getzola.org/themes/lightspeed).
+Original license is copied [here](./LICENSE.md).
