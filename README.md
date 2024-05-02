@@ -10,9 +10,9 @@ The structure of this project:
     # contains all blog posts
     |- blogs
         |- _index.md
-        |- ${YYYY.MM.DD}-{VERSION-1}-{NAME-1}.md
+        |- ${YYYY.MM.DD}-p{PART-1}.md
         |- ...
-        |- ${YYYY.MM.DD}-{VERSION-n}-{NAME-n}.md
+        |- ${YYYY.MM.DD}-p{PART-n}.md
 
 |- themes
     |- hook
