@@ -28,3 +28,5 @@ My technical interests include:
 <br>
 <br>
 <br>
+
+You can read more about my ramblings down below:
