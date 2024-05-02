@@ -7,6 +7,8 @@ Based off of the [`hook`](https://www.getzola.org/themes/hook) theme.
 Original license for `hook` is still maintained [here](./themes/hook/LICENSE).
 
 ## Structure
+For future postings, the following structure should be observed.
+
 ```
 /
 |- content
@@ -24,3 +26,7 @@ Original license for `hook` is still maintained [here](./themes/hook/LICENSE).
     |- hook
         |- ...
 ```
+
+All content should be placed inside of [`content/blogs`](content/blog).
+Follow the format for file names.
+The initial verbiage on the landing page is located inside of [`content/_index.md`](content/_index.md).
