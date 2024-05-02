@@ -27,6 +27,6 @@ For future postings, the following structure should be observed.
         |- ...
 ```
 
-All content should be placed inside of [`content/blogs`](content/blog).
+All content should be placed inside of [content/blogs](content/blog).
 Follow the format for file names.
-The initial verbiage on the landing page is located inside of [`content/_index.md`](content/_index.md).
+The initial verbiage on the landing page is located inside of [content/_index.md](content/_index.md).
