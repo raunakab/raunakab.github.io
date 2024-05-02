@@ -1,11 +1,5 @@
-theme = "lightspeed"
 base_url = "https://raunakab.github.io"
 compile_sass = true
 build_search_index = true
-
 title = "@rabh"
 description = "Personal blog"
-
-[[extra.footer_links]]
-name = "About"
-url = "$BASE_URL/about"
