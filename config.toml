@@ -17,7 +17,11 @@ title = "LinkedIn"
 href = "https://www.linkedin.com/in/raunakbhagat"
 
 [[extra.links]]
-title = "Resume"
+title = "Resume (PDF download)"
+href = "https://github.com/raunakab/resume/releases/download/1.0.0-2024.04.30/rb-resume.pdf"
+
+[[extra.links]]
+title = "Resume (GitHub releases)"
 href = "https://github.com/raunakab/resume/releases/tag/1.0.0-2024.04.30"
 
 [[extra.links]]
