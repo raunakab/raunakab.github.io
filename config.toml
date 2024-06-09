@@ -5,8 +5,10 @@ compile_sass = true
 build_search_index = false
 
 title = "@rabh"
+
+[markdown]
 highlight_code = true
-highlight_theme = "agola-dark"
+highlight_theme = "ayu-dark"
 
 [[extra.links]]
 title = "GitHub"
