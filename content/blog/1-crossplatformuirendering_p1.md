@@ -140,7 +140,7 @@ So what do we do?
 
 Well... I think we'll need to reinvent (or better yet, *redesign*) the wheel here.
 I think a potential solution exists in understanding how UI stacks are *distributed* to end-clients in the first place.
-And for that, our very next step will be to explore the offerings of [WASM](https://webassembly.org) and [WebGPU](https://www.w3.org/TR/webgpu).
+And for that, our very next step will be to explore the offerings of [`WASM`](https://webassembly.org) and [`WebGPU`](https://www.w3.org/TR/webgpu).
 
 <br>
 
