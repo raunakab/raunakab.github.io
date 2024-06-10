@@ -124,7 +124,7 @@ Well:
 1. Most pieces of software nowadays require an application.
 2. The most convenient way to make an application that *everyone* (not just iPhone users or Android users) can use is to make a web app.
 3. But web apps suck. Most consumers largely prefer to use native applications instead.
-4. Native applications are *not* cross platform! If you want to build a native iOS application, it will *not* run on Android phones! That means you need to develop a whole other native application for Androids! That means two separate development teams creating two separate applications that do essentially the same thing. And that's also forgetting macOS, Windows, and Linux apps...
+4. Native applications are *not* cross platform! If you want to build a native iOS application, it will *not* run on Android phones! That means you need to develop a whole other native application for Androids! Which then means two separate development teams creating two separate applications that do essentially the same thing! And that's also forgetting macOS, Windows, and Linux apps...
 
 <br>
 
