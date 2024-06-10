@@ -124,10 +124,37 @@ Well:
 1. Most pieces of software nowadays require an application.
 2. The most convenient way to make an application that *everyone* (not just iPhone users or Android users) can use is to make a web app.
 3. But web apps suck. Most consumers largely prefer to use native applications instead.
-4. Native applications are *not* cross platform! If you want to build a native iOS application, it will *not* run on Android phones! That means you need to develop a whole other native application for Androids! Which then means two separate development teams creating two separate applications that do essentially the same thing! And that's also forgetting macOS, Windows, and Linux apps...
+4. Native applications are *not* cross platform! If you want to build a native iOS application, it will *not* run on Android phones! That means you need to develop a whole other native application for Androids! Which then means two separate development teams creating two separate applications that do essentially the same thing![^1]. And that's also forgetting macOS, Windows, and Linux apps...
 
 <br>
 
 # Solution
 
-...
+There do exist *some* tools out there which provide a "pseudo" cross-platform rendering experience.
+The most notable here would be [`React Native`](https://reactnative.dev)[^2].
+However, there are some limitations with React Native.
+Namely, it cannot compile applications to WASM and distribute them across the web in a platform agnostic manner (since the core of React Native must link to a specific platform's native component library first, which cannot be included in a WASM executable).
+
+So what do we do?
+
+Well... easy.
+We reinvent the wheel.
+
+<br>
+
+*This is the first post in a series.
+Future posts will soon come.*
+
+<br>
+<br>
+<br>
+
+[^1]:
+There are ways of reducing the duplication of logic.
+It is possible to write the core business logic in a library which can then be integrated into the platform-dependent native applications individually (for example, by compiling the library down to a shared-object and dynamically linking to its symbols during runtime).
+However, the *rendering logic* will still need to be duplicated.
+
+[^2]: The reason why I say React Native provides a "somewhat" cross-platform experience is because it technically just links to the native components provided by that platform's native component library which are rendered by that platform's native rendering engine.
+I.e., it doesn't define a new component library rendered via *truly* cross-platform rendering engine.
+This technically means that you can observe divergent behaviours across various platforms.
+However, to the end-developer, those differences are rarely encountered, so React Native can be considered cross-platform enough for us.
