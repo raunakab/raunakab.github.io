@@ -80,88 +80,54 @@ But here are where the problems start.
 
 # Old Technologies in a New Era
 
-The only problem with these standards is that they're old and were designed for simple web *pages*, not web *apps*.
-They were designed in a day and age when only simple pages of documents containing minimally styled text was the full extent of the internet.
+The W3C standard is old.
+It was originally concepted in 1994.
+Even though it has gone through *numerous* iterations and has been steadily modernizing to keep up with the high-quality UI/UX features that consumers expect nowadays, the original "stink" still remains.
 
-<!-- The only problem with these standards is that they're largely designed -->
-<!-- The only problem with the W3C standard is that it sucks. -->
-<!-- It's an old standard. -->
-<!-- And being old means that it was designed in a time when UI/UX research was a second-thought. -->
-<!-- The early --> 
+The W3C standard defines HTML specification.
+The HTML specification was created to define web *pages* - not web *apps*.
+Those two things are **PHENOMENALLY** different from one another.
+Here's an example of a web page and a web app.
+Try to see if you can intuitively feel the differences.
 
+1. [SCons doc site](https://scons.org/doc/production/HTML/scons-man.html) (web page)
+2. [YouTube](https://youtube.com/) (web app)
 
-<!-- - They can then send that HTML source code over the network to any arbitrary client. -->
-<!-- - And as long as that client has a browser that implements the W3C standard, they will be able to turn that HTML into a rendered output that can be viewed on a screen. -->
+The first one is a static site.
+It doesn't have animations popping up or any dynamic motions in it.
+What you see is what you get.
+It's almost as if a real piece of paper became digitalized and found its way onto your screen.
+That is a web *page*.
 
-<!-- For example, the topmost `View` should go in the center of the canvas, and the `Text` structure should go within the center of that `View`. -->
-<!-- This high-level description then needs to then be broken down into its individual CPU/GPU draw calls. -->
-<!-- This high-level framework needs to then translate this high-level description into CPU/GPU draw calls. -->
-<!-- Before I dive into the world of "cross-platform UI rendering", let me highlight the rough concept of what "rendering" is. -->
-<!-- Rendering is the act of drawing objects to some physical screen. -->
-<!-- This is how graphical user-interfaces (GUIs), terminal emulators, and just about anything that draws to a screen work. -->
-<!-- You're probably reading this on a screen which has all of this text rendered onto it. -->
-<!-- The core piece of software that performs this rendering is called a *rendering engine*. -->
-<!-- A rendering engine provides a programmatic way of allowing end-users to issue the low-level draw calls. -->
-<!-- For example, a rendering engine may expose some APIs such as: -->
-<!-- ```python -->
-<!-- rendering_engine = RenderingEngine() -->
-<!-- rendering_engine.draw_line(from=[0.0, 0.0], to=[100.0, 100.0]) -->
-<!-- rendering_engine.draw_triangle(point_a=[0.0, 0.0], point_b=[10.0, 0.0], point_c=[0.0, 10.0]) -->
-<!-- ``` -->
-<!-- Using these building blocks, you can eventually compound them into producing more complex objects, such as polygons, text, and, if you want, even human faces. -->
-<!-- This is how high-level applications work. -->
-<!-- They can describe high level UI components using some concise API, and those concise APIs will then eventually perform all of those low-level draw calls. -->
-<!-- iPhone applications developed using SwiftUI all render objects and text and images internally using Apple's rendering engine. -->
-<!-- Android applications developed using Kotlin all render objects and text and images internally using Google's rendering engine. -->
-<!-- And similarly for all other devices and platforms. -->
-<!-- The problem, however, is that these rendering engines are not interchangeable. -->
-<!-- You can't run apps built using SwiftUI on an Android phone, and vice versa. -->
-<!-- For that, you'll need a cross-platform rendering engine. -->
-<!-- # Intro -->
+The other is a complex, dynamic experience that changes its content everytime you refresh the page.
+When you hover on one of the thumbnails, it smoothly enlarges and starts autoplaying its contents.
+The left side also contains a tab-bar with notifications and alerts that constantly update as new content is pumped out.
+That is a web *app*.
 
+The original W3C standard (designed in 1994, mind you) was designed to support the former: a simple web page.
+There's nothing complex about it, because complex web apps were *not a thing back in the 1990s.*
+The purpose of the HTML specification was for developers to send "static, digital pieces of paper" around to one another.
 
-<!-- You native Instagram application, for example, uses Apple's [`Metal` rendering engine]() to draw those pictures and texts and shapes and objects to the screen. -->
-<!-- Rendering engines aren't exactly anything new. -->
-<!-- Engineers and companies over the years have created some immensely powerful tools for frontend rendering. -->
-<!-- The base starts with a rendering engine. -->
-<!-- This is a piece of software which exposes APIs that allows end-users to issue "draw-calls" either to the CPU or the GPU. -->
-<!-- The only problem, however, is that often times these rendering engines are not cross-platform. -->
-<!-- Frontend rendering is a segmented field. -->
-<!-- To be fair, there are millions of tools and frameworks out there, but a large majority of them are *non-cross-platform*. -->
-<!-- The rendering logic for an application written in Swift for iOS *cannot* be ported over to generate an Android application. -->
-<!-- You will need to re-write your rendering logic for your Android application in Java/Kotlin. -->
-<!-- This creates a duplication of logic written in two separate languages managed by, presumably, two separate teams. -->
-<!-- There do exist some tools out there that bridge this gap, the most notable being [React Native](https://reactnative.dev). -->
-<!-- React Native is a phenomenal tool and, especially aided by [Expo](https://expo.dev), it opens up quick and fast iteration by small teams to produce a *native* application available for both platforms *without* having two separate codebases. -->
-<!-- This makes React Native especially appealing to startups; in fact, check out any startup's job listings and (if they're producing a native application), you will most likely see a listing for a React Native developer. -->
-<!-- Another *more* notable cross-platform solution does exist, however. -->
-<!-- HTML rendering engines (primarily found inside of internet browsers). -->
-<!-- HTML sent across the wire to a client and rendered in an HTML-rendering-engine is essentially cross-platform. -->
-<!-- The HTML-rendering-engine could be embedded inside of Safari running on a Mac or iPhone, or inside of Firefox running on a Linux PC, or inside of Edge running on a Windows. -->
-<!-- The point is: HTML can be written once and be rendered on virtually any device that has a browser with an HTML-rendering-engine[^1]. -->
-<!-- ## Limitations -->
-<!-- The only catch here is that HTML was designed with a very basic function in mind: it was designed to render a simple web *page*. -->
-<!-- Emphasis on the *page* here. -->
-<!-- A web page is a simple thing. -->
-<!-- It contains text and maybe a little bit of styling. -->
-<!-- But other than that, *not much else*. -->
-<!-- Most importantly, it does *not* contain animations, widgets, dynamic user-flows, etc. -->
-<!-- Those extra features were products of time. -->
-<!-- As we progressed in time and as UI/UX research flourished, the UI requirements of websites quickly scaled. -->
-<!-- Now all of a sudden, companies needed fancy widgets on their landing page. -->
-<!-- They needed animations and stylings. -->
-<!-- To fulfil this rampant uptick in frontend complexity, the simple HTML spec was padded, the CSS spec was padded, and a Javascript runtime to dynamically modify the DOM was added. -->
-<!-- But the underlying smell still remained. -->
-<!-- We've taken a technology that at its heart was designed for rendering simple web pages and augmented it past recognition. -->
-<!-- The modern day HTML and CSS spec is a mess. -->
-<!-- ## Solution -->
-<!-- Over the past couple of years, some phenomenal new technologies have been on the rise. -->
-<!-- Two of which have especially piqued my interest: [WASM](https://webassembly.org) and [WebGPU](https://www.w3.org/TR/webgpu). -->
-<!-- I think (in my admittedly naive perspective) that these two pieces of technology could solve the segmentation problem that we're seeing in frontend rendering, *without compromising on complexity*. -->
-<!-- <br> -->
-<!-- <br> -->
-<!-- <br> -->
-<!-- [^1] -->
-<!-- This isn't strictly true. -->
-<!-- It is possible to use *certain* HTML tags which are [not fully supported across all browsers and across all platforms and across all versions](https://caniuse.com). -->
-<!-- This does mean that HTML is technically not fully cross-platform, *but given that most are supported in modern versions of modern browsers, it's cross-platform enough for the sake of this blog*. -->
+However, as time progressed and more complex UI/UX features were desired (i.e., animations), the W3C standard was updated.
+One of those updates was the inclusion of ECMAScript: a scripting language that could run client-side to dynamically update the contents of the page, thereby making the page feel more ... *"app-like"*.
+
+But even considering those updates, web apps still fail to be truly immersive applications.
+There are still remnant artifacts of them being *web-rendered* applications that make them feel unnatural.
+For example, navigate to the [YouTube](https://youtube.com) site, click on the top-left of your screen, and drag down to the bottom-left.
+You'll notice that this highlights all of the text **and** the thumbnails!
+This is a feature that *must* be included according to the W3C standard, but it doesn't make any sense for thumbnails to be highlight-able.
+
+<br>
+
+So what's my point here?
+Well:
+1. Most pieces of software nowadays require an application.
+2. The most convenient way to make an application that *everyone* (not just iPhone users or Android users) can use is to make a web app.
+3. But web apps suck. Most consumers largely prefer to use native applications instead.
+4. Native applications are *not* cross platform! If you want to build a native iOS application, it will *not* run on Android phones! That means you need to develop a whole other native application for Androids! That means two separate development teams creating two separate applications that do essentially the same thing. And that's also forgetting macOS, Windows, and Linux apps...
+
+<br>
+
+# Solution
+
+...
