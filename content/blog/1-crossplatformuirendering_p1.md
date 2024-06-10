@@ -29,7 +29,7 @@ struct ContentView: View {
 
 In this (purposefully limited) example, we can see a high-level description of what the UI should look like:
 a simple `View` structure that contains two sub structures; one being a `Text` structure that contains the string `"Hello, world!"`, and the other being a pressable button which contains the string `"Click me!"`.
-The button also contains the ability to run the code on `Line 7` when it is pressed.
+The button also contains the ability to run the code on `line 7` when it is pressed.
 
 This high-level description of a UI is the "high-level framework", `SwiftUI`, at play.
 Next, this high-level description then needs to layout those structures somewhere within the canvas.
