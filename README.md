@@ -18,14 +18,16 @@ For future postings, the following structure should be observed.
     # contains all blog posts
     |- blogs
         |- _index.md
-        |- ${YYYY.MM.DD}-p{PART-1}.md
+        |- 0-${BLOG_POST_NAME_0}.md
         |- ...
-        |- ${YYYY.MM.DD}-p{PART-n}.md
+        |- ${n}-${BLOG_POST_NAME_n}.md
 
 |- themes
     |- hook
         |- ...
 ```
+
+where `n` is some natural number.
 
 All content should be placed inside of [content/blogs](content/blog).
 Follow the format for file names.

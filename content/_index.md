@@ -3,6 +3,8 @@
 
 <br>
 
+## About me
+
 My name's Raunak.
 I'm a software engineer located in Palo Alto, CA.
 
@@ -24,9 +26,8 @@ My technical interests include:
   - one can then deliver these `WASM` binaries to the client and run it in a some standardized `WASM-VM`
   - this can then render the entire "native-feeling" application to the client's screen
   - (note that there are security concerns with running arbitrary binaries client-side; this can be safe-guarded against by limiting the ABIs/APIs/symbols that that binary has access to in the first place)
+  - you can read more about this in my blog posts
 
 <br>
 <br>
 <br>
-
-You can read more about my ramblings down below:
