@@ -5,7 +5,7 @@ date = 2024-06-10
 
 # Prelude
 
-The UI rendering stack consists of a sequence of various pieces of software all working together to turn high-level declarative descriptions of a UI into the low-level CPU/GPU draw-calls which actually perform the data-writes to whatever screen-buffer(s) is(are) provided.
+The *UI rendering stack* consists of a set of various pieces of software all working together to turn high-level declarative descriptions of a UI into low-level CPU/GPU draw-calls which actually perform the data-writes to whatever screen-buffer(s) is(are) provided.
 
 The canonical stack usually comprises of the following pieces of software (which may themselves be broken down into further libraries):
 1. A high level framework providing concise APIs to draw UI elements (such as Views, ScrollViews, Tabs, Buttons, etc.).
@@ -28,20 +28,21 @@ struct ContentView: View {
 ```
 
 In this (purposefully limited) example, we can see a high-level description of what the UI should look like:
-a simple `View` structure that contains two sub structures; one being a `Text` structure that contains the string `"Hello, world!"`, and the other being a pressable button which contains the string `"Click me!"`.
-The button also contains the ability to run the code on `line 7` when it is pressed.
+a simple `View` structure that contains two sub structures; one being a `Text` structure that contains the string `"Hello, world!"`, and the other a `Button` structure which contains the string `"Click me!"` and is pressable.
+The `Button` structure also has the added feature of being able to run some logic only when it is pressed.
 
 This high-level description of a UI is the "high-level framework", `SwiftUI`, at play.
-Next, this high-level description then needs to layout those structures somewhere within the canvas.
-Finally, it then needs to call into the rendering engine to perform those low-level CPU/GPU draw calls that will eventually paint the appropriate pixels with the correct colors.
-Additionally, in the case that any form of user/device/window event is registered, the IO engine should signal the high-level framework accordingly.
-The high-level framework can then *redraw/update* those `View` and `Text` structures.
+Once it is being run, it will need to do a couple of things.
+Firstly, it will need to layout those structures somewhere within the canvas (i.e., find each of their positionings, heights, and widths).
+Secondly, it will then need to call into the rendering engine to perform those low-level CPU/GPU draw calls that will eventually paint the appropriate pixels with the correct colors.
+And finally, in the case that any form of user/device/window event is registered, the IO engine will need to send a signal to the high-level framework notifying it of what has happened.
+The high-level framework can then *redraw/update* those `View`, `Text`, and `Button` structures accordingly.
 
 This is how those above 3 components of the UI stack all intermingle with one another.
-You describe the layout in a high-level fashion, the high-level framework transforms that layout into low-level draw calls, and an IO-engine signals to the high-level framework when those structures need to be redrawn.
+You describe some structures in a high-level fashion, the high-level framework lays out those structure and transforms that layout into low-level draw calls, and then an IO-engine signals to the high-level framework when those structures need to be redrawn.
 
 This stack exists in many forms for many different platforms.
-The only problem is that these stacks are platform-dependent.
+The only problem is that these stacks are **platform-dependent**.
 You can't run applications developed using the `SwiftUI` stack on an Android phone.
 
 For that, you'll need a *cross-platform UI stack*.
@@ -137,8 +138,8 @@ Namely, it cannot compile applications to WASM and distribute them across the we
 
 So what do we do?
 
-Well... easy.
-We reinvent the wheel.
+Well... I think a potential solution exists in understanding how UI stacks are *distributed* to end-clients in the first place.
+As such, our very next step will be to explore the offerings of [WASM](https://webassembly.org) and [WebGPU](https://www.w3.org/TR/webgpu).
 
 <br>
 
