@@ -18,9 +18,9 @@ For future postings, the following structure should be observed.
     # contains all blog posts
     |- blogs
         |- _index.md
-        |- ${YYYY.MM.DD}-p{PART-1}.md
+        |- ${YYYY.MM.DD}-{name_of_blog_1}.md
         |- ...
-        |- ${YYYY.MM.DD}-p{PART-n}.md
+        |- ${YYYY.MM.DD}-{name_of_blog_n}.md
 
 |- themes
     |- hook
