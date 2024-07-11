@@ -57,6 +57,7 @@ code {
 }
 
 pre {
+  background-color: rgb(20, 30, 40) !important;
   overflow: auto;
   border-radius: 0.5em;
 
@@ -66,12 +67,10 @@ pre {
 
   table {
     padding: 1em 1.5em;
-    background-color: rgb(20,30,40);
   }
 
   table td {
     padding-right: 1.5em;
-    background-color: rgb(20,30,40);
     border: none;
   }
 
@@ -113,6 +112,7 @@ table {
   }
 
   td {
+    background-color: rgb(20, 30, 40) !important;
     border-top: none;
   }
 }
