@@ -1,5 +1,5 @@
 +++
-title = "Buck2 builds: An introduction"
+title = "Buck2 builds: An introduction to \"no-prelude\" buck2 builds"
 date = 2024-07-11
 +++
 
@@ -24,7 +24,7 @@ Or, if you were feeling especially fancy, you could even write it in `python` or
 Then, everytime you wanted to execute that sequence of build steps, you would just run that script.
 
 My opinion slowly started to change when I got introduced to my first large, polyglot mono-repository.
-And my opinion finally fully converted when I realized the amount of "codegen"-ing that was being used to create source code for downstream build steps.
+And my opinion finally fully converted when I realized the amount of custom "codegen"-ing that was being used to create source code for downstream build steps.
 
 In large, polyglot mono-repositories, you will have a plethora of build steps, all interconnected in a tangled ADG (acyclic-directed-graph).
 And that is just too complex for a simple little script to comprehend.
@@ -45,7 +45,7 @@ At the end, we should have created a close replica of the above `cargo` commands
 - `buck2 run ...`
 - `buck2 test ...`
 
-Lastly, the language that I will choose to implement this small example in is `C`.
+For this article, the language that I will choose to implement this small example in is `C`.
 The concepts that I'll be focusing on here, however, will be so largely agnostic of `C` itself that the core principlies can be easily carried over to any other language (i.e., `rust`, `go`, `ocaml`, etc.).
 
 <br>
@@ -61,7 +61,7 @@ buck2 --version
 ```
 
 and see a *build-id* being outputted to the screen.
-That means that the installation of the `buck2` binary and its addition to your path were successful.
+That means that both the installation of the `buck2` binary and its addition to your path were successful.
 The output that I saw from running that command was `buck2 02c303cd4a4330688844d492950c11fd <build-id>`.
 You may be running a slightly newer or older version than I am; that may or may not cause some slight differences in the APIs that `buck2` exposes.
 
@@ -79,7 +79,7 @@ buck2 init .
 
 This will initialize an empty `buck2` repository for us.
 Most importantly, this repository will *not* contain any prebuilt rules!
-This is going to be especially important for us since we are going to be re-writing them from scratch.
+This is going to be especially important for us since we are going to be re-writing them from scratch (thus fulfilling the entire "no-prelude" point of this article).
 
 This is the structure of the repository that you should be seeing so far:
 
@@ -112,6 +112,8 @@ This file *must* be present.
 Whatever items that are defined in there are *auto-imported* across all of your `.bzl` and `BUCK` files.
 We will add some things in there later.
 
+Your repository should now be looking like this:
+
 ```txt,linenos
 buck2-build/
     |- .buckroot
@@ -127,14 +129,14 @@ All of these files (except for the `.buckconfig`) should be empty.
 This will be our starting off point for our example project.
 Super minimal, as you can clearly see.
 
-<br>
-
-# Running our first build
-
-Now that we have a bare-bones `buck2` project, we can finally run a build.
+Actually, since everything that `buck2` needs to be present is, in fact, present, you can start running a build at this stage!
 Of course, that build won't do anything special (since there's literally nothing to build), but the command should still work vacuously.
+Try running the following:
 
-Therefore, run the following:
+<!-- <br> -->
+<!-- # Running our first build -->
+<!-- Now that we have a bare-bones `buck2` project, we can finally run a build. -->
+<!-- Therefore, run the following: -->
 
 ```bash,linenos
 buck2 build //:
@@ -147,6 +149,17 @@ What the hell is that weird looking `//:` thing at the end?
 In short, that is a [*build target*](https://buck2.build/docs/concepts/build_target).
 There is a great summary [here](https://buck2.build/docs/concepts/key_concepts/) of the overall concepts of cells, build targets, and build files.
 I recommend you read up on those concepts thoroughly before continuing with the rest of this post.
+
+<!-- I won't attempt to explain the concept of build targets in this post; the explanation would only lengthen this article's wordcount and distract from the more important principles of `buck2`. -->
+<!-- However, I'll give a brief explanation on how that `//:` was derived. -->
+<!-- The general structure of a build target is `$CELL / $PATH_TO_BUCK_FILE : $NAME_OF_TARGET`. -->
+<!-- If we leave the `$CELL` empty, `buck2` assumes that you're referring to the root cell. -->
+<!-- Secondly, since our main `BUCK` file is located at the root of our repository, its path is simply `/`. -->
+<!-- Lastly, if we leave `$NAME_OF_TARGET` empty, `buck2` assumes we want to build *every target in that `BUCK` file*. -->
+<!-- Since we have no targets in that `BUCK` file, it will vacuously succeed. -->
+<!-- Therefore, putting it all together (`$CELL = ''`, `$PATH_TO_BUCK_FILE = '/'`, `$NAME_OF_TARGET = ''`), we get `//:`. -->
+
+Although building nothing is super exciting, let's move on to more interesting builds.
 
 <br>
 
@@ -214,8 +227,8 @@ However, running that above command in your shell won't work just yet.
 Remember, we've littered the `build.bzl` file with "..."s.
 In order for things to build, we'll need to fill in those ellipses with meaningful code.
 
-However, the concepts that should be clear at this point are:
-1. I can create a rule which takes in attributes and runs a function if called, thereby producing an output
+But before we do that, the concepts that should be clear at this point are:
+1. You can create a rule which takes in attributes and runs a function if called, thereby producing an output.
 2. Targets are applications of rules.
 3. The same rule can be used for multiple different targets.
 For example, I could add a second target inside of my `BUCK` file as such:
@@ -240,7 +253,15 @@ simple_rule_that_practically_does_nothing(
 )
 ```
 
-I could then individually build the first target (by running `buck2 build //:my_first_target`), individually build the second target (by running `buck2 build //:my_second_target`), or build them both (by running `buck2 build //:`).
+and then I could then individually build any one single target, or collectively build all the targets defined in that file.
+
+<br>
+
+# Filling in the blanks
+
+Let's design our rule such that it takes in zero arguments.
+Therefore, it will have *zero attributes*.
+Let's also design it such that it will produce nothing (which `buck2` will issue a warning about, but which we'll ignore for the time being).
 
 <br>
 
@@ -248,7 +269,7 @@ I could then individually build the first target (by running `buck2 build //:my_
 
 Let's create a more practical rule now.
 We'll write a rule that, once called, will compile a `C` source file into an executable binary.
-Now, I will be using `clang`, but it should be clear that you can use whatever compiler you wish to use.
+Now, I will be using `clang`, but you can obviously use whicher compiler you wish to use.
 
 Let's re-write our `build.bzl` file with the following:
 
