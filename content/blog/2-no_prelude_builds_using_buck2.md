@@ -223,7 +223,7 @@ The *name* of the target is `my_first_target` and, most importantly, the way we 
 buck2 build //:my_first_target
 ```
 
-However, running that above command in your shell won't work just yet.
+Running that above command in your shell won't work just yet, however.
 Remember, we've littered the `build.bzl` file with "..."s.
 In order for things to build, we'll need to fill in those ellipses with meaningful code.
 
@@ -259,9 +259,33 @@ and then I could then individually build any one single target, or collectively 
 
 # Filling in the blanks
 
-Let's design our rule such that it takes in zero arguments.
-Therefore, it will have *zero attributes*.
-Let's also design it such that it will produce nothing (which `buck2` will issue a warning about, but which we'll ignore for the time being).
+Let's fill in the blanks of our existing rule.
+We'll fill them in in such a way that the rule takes in zero attributes and outputs nothing.
+`buck2` will throw a runtime warning for not outputting anything from a rule, but we'll ignore that warning for the time being.
+
+```bzl,linenos
+# (build.bzl)
+
+def impl(ctx):
+  return [DefaultInfo()]
+
+simple_rule_that_practically_does_nothing = rule(
+  impl=impl,
+  attrs={},
+)
+```
+
+```bzl,linenos
+# (BUCK)
+
+load("@root//build.bzl", "simple_rule_that_practically_does_nothing")
+
+simple_rule_that_practically_does_nothing(
+  name = "my_first_target",
+)
+```
+
+Now, if you run `buck2 build //:my_first_target`, the build should succeed (as well as output a warning that nothing was produced, which, as I mentioned earlier, we'll ignore).
 
 <br>
 
