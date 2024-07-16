@@ -1,5 +1,5 @@
 +++
-title = "Buck2 builds: An introduction to \"no-prelude\" buck2 builds"
+title = "Buck2 builds: a soft introduction to buck2"
 date = 2024-07-11
 +++
 
