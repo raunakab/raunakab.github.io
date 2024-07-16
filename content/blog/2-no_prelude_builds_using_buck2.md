@@ -19,7 +19,7 @@ The reason being is that I had never worked on large, polyglot, *mono-repositori
 In all of my experiences working on large, polyglot applications, they would always be *split up into multiple smaller repositories*, of which each repository would be *monoglottic* in and of itself.
 Therefore, each monoglot repository could then just benefit from using that language's preferred, out-of-the-box build-tool.
 
-In my mind, if you did want to execute some complex sequence of build steps, you could just write a simple little bash script.
+In my mind, if you did want to execute some complex sequence of build steps, you could just write a simple, little bash script.
 Or, if you were feeling especially fancy, you could even write it in `python` or some other quick and dirty scripting language.
 Then, everytime you wanted to execute that sequence of build steps, you would just run that script.
 
@@ -27,7 +27,7 @@ My opinion slowly started to change when I got introduced to my first large, pol
 And my opinion finally fully converted when I realized the amount of custom "codegen"-ing that was being used to create source code for downstream build steps.
 
 In large, polyglot mono-repositories, you will have a plethora of build steps, all interconnected in a tangled ADG (acyclic-directed-graph).
-And that is just too complex for a simple little script to comprehend.
+And that is just too complex for a simple, little script to comprehend.
 This is where more formalized solutions like `buck2` step in to solve the problem.
 
 <br>
