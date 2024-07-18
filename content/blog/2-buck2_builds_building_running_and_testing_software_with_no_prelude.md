@@ -1,6 +1,6 @@
 +++
 title = "Buck2 builds: a soft introduction to buck2 using no-prelude builds"
-date = 2024-07-16
+date = 2024-07-18
 +++
 
 # Intro
