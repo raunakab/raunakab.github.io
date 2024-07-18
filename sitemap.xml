@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://raunakab.github.io/</loc>
+    </url>
+    <url>
+        <loc>https://raunakab.github.io/blog/</loc>
+    </url>
+    <url>
+        <loc>https://raunakab.github.io/blog/0-helloworld/</loc>
+        <lastmod>2024-05-01</lastmod>
+    </url>
+    <url>
+        <loc>https://raunakab.github.io/blog/1-crossplatformuirendering-p1/</loc>
+        <lastmod>2024-06-10</lastmod>
+    </url>
+    <url>
+        <loc>https://raunakab.github.io/blog/2-buck2-builds-building-running-and-testing-software-with-no-prelude/</loc>
+        <lastmod>2024-07-16</lastmod>
+    </url>
+</urlset>

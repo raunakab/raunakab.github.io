@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>@rabh</title>
+    
+    <link rel="stylesheet" href="https://raunakab.github.io/style.css?h=a029ba9105b164952234">
+    
+    
+    
+    
+</head>
+<body>
+    
+    <header class="space">
+        <h1>@rabh</h1>
+        
+        
+        <nav class="header-links">
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;raunakab">GitHub</a>
+            
+            <a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;raunakbhagat">LinkedIn</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;raunakab&#x2F;resume&#x2F;releases&#x2F;download&#x2F;1.0.0-2024.04.30&#x2F;rb-resume.pdf">Resume (PDF download)</a>
+            
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;raunakab&#x2F;resume&#x2F;releases&#x2F;tag&#x2F;1.0.0-2024.04.30">Resume (GitHub releases)</a>
+            
+            <a href="mailto:rabhagat31@gmail.com">Mail</a>
+            
+            
+        </nav>
+        
+    </header>
+    
+    
+    
+    
+    <main>
+        
+        <div class="space">
+            <br>
+<h2 id="about-me">About me</h2>
+<p>My name's Raunak.
+I'm a software engineer located in Palo Alto, CA.</p>
+<p>I graduated from the <a href="https://www.ubc.ca">University of British Columbia, Vancouver</a> in May 2023.
+I received a B.Sc. in Computer Science and Mathematics.</p>
+<p>My non-technical interests include:</p>
+<ul>
+<li>basketball</li>
+<li>hockey</li>
+<li>working out</li>
+<li>reading (mainly big-name fantasy fiction titles; e.g., LOTR, Harry Potter, Dune, etc.)</li>
+<li>watching tv shows + movies (currently watching <a href="https://en.wikipedia.org/wiki/Ozark_(TV_series)">Ozark</a>)</li>
+</ul>
+<p>My technical interests include:</p>
+<ul>
+<li>build tools (highly invested in <a href="https://buck2.build"><code>buck2</code></a> right now)</li>
+<li>programming languages (<code>rust</code>, <code>ocaml</code>, <code>go</code>; in that order)</li>
+<li>web-based rendering engines
+<ul>
+<li>e.g., binaries compiled to <a href="https://webassembly.org"><code>WASM</code></a> with <a href="https://www.w3.org/TR/webgpu"><code>WebGPU</code></a> integrations</li>
+<li>one can then deliver these <code>WASM</code> binaries to the client and run it in a some standardized <code>WASM-VM</code></li>
+<li>this can then render the entire &quot;native-feeling&quot; application to the client's screen</li>
+<li>(note that there are security concerns with running arbitrary binaries client-side; this can be safe-guarded against by limiting the ABIs/APIs/symbols that that binary has access to in the first place)</li>
+<li>you can read more about this in my blog posts</li>
+</ul>
+</li>
+</ul>
+<br>
+<br>
+<br>
+
+        </div>
+        
+        
+        <h2>Recent posts</h2>
+        <ul>
+            
+            <li><a href="https:&#x2F;&#x2F;raunakab.github.io&#x2F;blog&#x2F;2-buck2-builds-building-running-and-testing-software-with-no-prelude&#x2F;">Buck2 builds: a soft introduction to buck2 using no-prelude builds</a></li>
+            
+            <li><a href="https:&#x2F;&#x2F;raunakab.github.io&#x2F;blog&#x2F;1-crossplatformuirendering-p1&#x2F;">Cross-Platform UI Rendering - (Part 1)</a></li>
+            
+            <li><a href="https:&#x2F;&#x2F;raunakab.github.io&#x2F;blog&#x2F;0-helloworld&#x2F;">Hello, world!</a></li>
+            
+        </ul>
+        <p><a href="https:&#x2F;&#x2F;raunakab.github.io&#x2F;blog&#x2F;">Archive</a></p>
+        
+    </main>
+    
+    
+    <div class="dark-mode-buttons">
+        <button class="dark-mode-button" id="dark-mode-on"><img src="https://raunakab.github.io/dark_mode.svg" width="24" height="24" alt="Dark mode" aria-label="dark mode toggle" title="Dark mode"></button>
+        <button class="dark-mode-button" id="dark-mode-off"><img src="https://raunakab.github.io/light_mode.svg" width="24" height="24" alt="Light mode" aria-label="light mode toggle" title="Light mode"></button>
+    </div>
+    <script>
+        const cls = document.body.classList;
+        const getSessionTheme = sessionStorage.getItem("theme");
+        if (getSessionTheme === "dark") {
+            cls.toggle("dark-mode", true);
+        } else if (getSessionTheme === "light") {
+            cls.toggle("dark-mode", false);
+        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            cls.toggle("dark-mode", true);
+        }
+
+        document.getElementById("dark-mode-on").addEventListener("click", function(e) {
+            cls.toggle("dark-mode", true);
+            sessionStorage.setItem("theme", "dark");
+        });
+        document.getElementById("dark-mode-off").addEventListener("click", function(e) {
+            cls.toggle("dark-mode", false);
+            sessionStorage.setItem("theme", "light");
+        });
+    </script>
+    <noscript>
+        <style>
+            .dark-mode-buttons {
+                display: none;
+            }
+        </style>
+    </noscript>
+</body>
+</html>
