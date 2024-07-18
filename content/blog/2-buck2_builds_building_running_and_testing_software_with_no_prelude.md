@@ -1,5 +1,5 @@
 +++
-title = "Buck2 builds: building, running, and testing software with no prelude"
+title = "Buck2 builds: a soft introduction to buck2 using no-prelude builds"
 date = 2024-07-16
 +++
 
@@ -212,7 +212,9 @@ buck2-build/
         |- main.c
 ```
 
-Throw some basic, boilerplate `C` source code inside of `main.c`:
+Next, throw some basic, boilerplate `C` source code inside of `main.c`.
+It doesn't need to be anything fancy; the point of this article is to showcase the features of `buck2`, not for me to show-off my `C` skills!
+This is what I threw in there:
 
 ```c,linenos
 // (src/main.c)
@@ -220,22 +222,30 @@ Throw some basic, boilerplate `C` source code inside of `main.c`:
 int main(void) { return 0; }
 ```
 
-Now, if we were to invoke the compiler on this file manually, the command we would run is:
+Obviously very basic, but we don't need the code to be too complex right now.
+
+Okay, so now we have a source file with some basic `C` code inside of it.
+Now what?
+Well, we eventually want `buck2` to run a compile command for us, right?
+So if we were to invoke the compiler on this file manually, the command we would run is:
 
 ```bash,linenos
 clang src/main.c -o main
 ```
 
 (assuming that we're using `clang`).
-That would produce an output binary, called `main`, that is placed inside of your current directory.
-You could even run that `main` binary; granted, it wouldn't do anything quite exciting since all we did was return `0` from our main function, but it's still technically an executable binary.
 
-Now, the whole point of this article is that we would like for *`buck2`* to issue that compile command for us; not for us to run that command manually each and every single time.
-So in order for `buck2` to understand that that is what we want it to run, we need to do two things:
-1. Define a "rule".
-2. Define a "target" that applies that "rule".
+So our goal should be for us to write some build code in such a way that `buck2` will eventually end up running that exact command for us...
 
-Let's tackle each one in order.
+The way we go about doing that is by:
+1. Defining a "rule".
+2. Defining a "target" that applies that "rule".
+
+As soon as we do those above two things, `buck2` will know what to do when we ask it to "build our `C` file".
+Internally, it will run that exact, raw command for us!
+The nice thing is that `buck2` will give us a nice interface for us to build things, but internally, *it will be the one to invoke those ugly command line calls*.
+
+With all of that being said, let's tackle each one of those tasks in order.
 
 <br>
 
@@ -449,6 +459,8 @@ Now everything should work as expected.
 If you update `src/main.c` to be intentionally erroneous, running `buck2 build root//:my_first_target` will appropriately fail.
 Fixing those errors will then result in successful builds again.
 
+<br>
+
 # Running an executable
 
 Okay, cool.
@@ -457,8 +469,8 @@ But how about *running* it?
 Right now, all `buck2` knows how to do is *compile* our source code into an executable binary.
 We haven't told it how to run that executable binary.
 
-However, making that change will actually be super simple!
-In order for `buck2` to recognize how to run an executable, we need to just append one additional provider to the `impl` callback that we made.
+However, making that change will actually be super simple.
+In order for `buck2` to recognize how to run an executable, we need to just append one additional provider to the `impl` callback that we wrote earlier.
 Namely:
 
 ```bzl,linenos
@@ -487,10 +499,10 @@ The lines which have changed are:
 - Line 17:
 Here, I've created a new command which simply just calls the produced `output` executable binary.
 That should make sense; if we produced an output via running `clang src/main.c -o main`, the way we would run that output would be via `./main`.
-Therefore, creating a new command with the arguments being `[output]` correlates to how we would have manually done it.
+Therefore, creating a new command with the list of arguments being just `[output]` correlates to how we would have manually run it.
 - Line 19:
 We pass in `run_command` to a provider called `RunInfo`.
-`buck2` will then see that this rule produces a `RunInfo` provider, and thus will know that whatever target called this rule is *runnable* via running `run_command`!
+`buck2` will then see that this rule has produced a `RunInfo` provider, and thus will know that whatever target called this rule is *runnable* via running `run_command`!
 
 You can even try running the `root//:my_first_target` target.
 Run the following command:
@@ -499,10 +511,10 @@ Run the following command:
 buck2 run root//:my_first_target
 ```
 
-That should build the executable binary (if and only if it *hasn't* been built previously), then it will run that built output.
-You can even try modifying `main.c` to print something to the command line.
+That should build the executable binary (if and only if it *hasn't* been built previously), and then run that built output.
+You could even try modifying `main.c` to print something to the command line.
 Our rule should be able to support `stdlib` imports.
-Therefore, updating `main.c` to:
+For example, we could update `main.c` to be instead:
 
 ```c,linenos
 // (src/main.c)
@@ -515,6 +527,65 @@ int main(void) {
 }
 ```
 
-and re-running `buck2 run root//:my_first_target` should rebuild the binary and run it.
-And therefore, you should see `"Hello, world!"` being printed to the console.
-Modifying the `printf` call with some other message and re-running `buck2 run root//:my_first_target` will perform another rebuild and re-run, with the new message being printed to console this time.
+And, as expected, you should see `"Hello, world!"` being printed to the console when `buck2 run root//:my_first_target` is invoked.
+Modifying the `printf` call with some other message and re-running that command will perform another rebuild and re-run, but this time with the new message being printed to console.
+
+<br>
+
+# Next steps
+
+Building and running a simple executable binary is, admittedly, not that complex.
+For starters, we're only compiling *one* `C` source file.
+Our rule cannot support compiling + linking *multiple* `C` source files into one final executable.
+Additionally, our rule can't link external shared objects (i.e., `.so`'s) either.
+
+All of these limitations to our existing rule, however, can be overcome.
+The simple way I go about it is to consider what the raw command that I would need to invoke is, and then write my rule off of that.
+For example, if I want to compile multiple `C` source files into `.o` object files, and then link them all together, the raw bash commands that I would manually invoke would be:
+
+```bash,linenos
+for file in ./*.c;
+do
+  clang -c $file -o ...
+done
+
+clang $file_1 ... $file_n -o main
+```
+
+(please excuse my `bash`, it's horrible).
+
+Therefore, if I wanted to write a rule that ran those commands above, I would essentially write an `impl` callback like:
+
+```bzl,linenos
+def compile_multiple_c_impl(ctx):
+  compiler = "path/to/clang"
+
+  outputs = []
+  for file in ctx.attrs.files:
+    name = get_file_name(file)
+    output = ctx.actions.declare_output(name)
+    command = cmd_args([
+      compiler,
+      "-c",
+      file,
+      "-o",
+      output.as_output(),
+    ])
+    ctx.actions.run(command, category="compile", identifier=name)
+    outputs.append(output)
+
+  name = "main"
+  final_output = ctx.actions.declare_output(name)
+  command = cmd_args(
+    [
+      compiler,
+    ] + outputs + [
+      "-o",
+      final_output.as_output(),
+    ]
+  )
+  ctx.actions.run(command, category="compile", identifier=name)
+  return [DefaultInfo(default_output=output)]
+```
+
+As you can clearly see, there's a close correlation between the logic inside of the `compile_multiple_c_impl` callback and the raw `bash` command.
