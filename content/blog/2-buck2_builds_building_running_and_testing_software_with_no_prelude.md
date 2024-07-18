@@ -74,13 +74,11 @@ Writing an article about implementing all of those features would result in me w
 Instead, let's stick to the basics:
 1. `cargo build`: Compiles and links the source code (including all of its dependencies) into a final executable (if it's a binary) or an object file (if it's a library).
 2. `cargo run`: Runs the built executable (provided that the source code is a binary).
-3. `cargo test`: Runs all the unit/integration tests defined in a project.
 
 By the end of this article, we will have hopefully created a convincing enough *simplified* clone of `cargo` in `buck2`.
 In essence, we will be able to run the following (pseudo-) commands and have them do the same thing that their corresponding `cargo` command would have done originally:
 1. `buck2 build`
 2. `buck2 run`
-3. `buck2 test`
 
 (The reason I mention "pseudo-commands" is because the syntax of a `buck2` command is slightly different than what I've shown, but the spirit is the same).
 
@@ -589,3 +587,35 @@ def compile_multiple_c_impl(ctx):
 ```
 
 As you can clearly see, there's a close correlation between the logic inside of the `compile_multiple_c_impl` callback and the raw `bash` command.
+
+Now with that being said, there are still a lot of things about proper `buck2` practices that I haven't scratched yet.
+Just to throw a couple out there:
+1. I haven't covered dependencies just yet.
+A canonical example would be the separation of building libraries vs building binaries.
+For instance, assume that I have a `libs/graph` library, as well as a binary located inside of `src` that depends upon that `libs/graph` library.
+A naive approach would be to create *one* rule that builds *everything all at once in one shot*.
+The problem with that rule is that if a file inside of `src` changes, *EVERYTHING* needs to be re-compiled; even `libs/graph` even though it hasn't changed at all.
+A better approach would be to separate the targets into a *"library"* target and a *"binary"* target.
+The binary target would then *depend* upon the library target.
+`buck2` could then be smart and cache the `library` builds (as long as their source code hasn't changed), thus dramatically improving compile times!
+2. Inside of our `impl` callback, we hard-coded the `compiler = "/path/to/clang"` variable.
+In reality, you would want this to be another *"toolchain"* dependency that our binary target depends upon.
+A nice side-effect with this approach is that you can define a multitude of toolchain dependencies.
+For example, you could have `toolchains//:clang` and `toolchains//:gcc` targets.
+You could also defined `toolchains//:gc` for the `go` compiler and `toolchains//:rustc` for the `rust` compiler.
+Binary targets could then depend upon whichever toolchain target was specified to run their own logic.
+3. Macros!
+Now macros in `buck2` are not exactly how macros inside of `C` or `rust` work.
+Macros here are essentially functions that can help abstract away the repetitiveness of writing targets.
+But they can make writing similar targets (with slight differences) much easier.
+4. I also haven't gone over *polyglot*, multi-step builds.
+Although they are a natural extension over some of the things that I've talked about in this article, they're the most applicable examples that I can think of.
+Lots and lots of large systems will have multiple stages of builds and codegen-ing, all of which to produce the final product.
+
+The above topics are highly crucial to properly wielding `buck2`.
+And although I believe that understanding them clearly is paramount to using `buck2` in a professional/serious context, writing about all of them in depth would require an entire novel.
+Instead, a much more effective solution would be for you to fully immerse yourself into some practical examples of a software project being built using `buck2`.
+As such, I've created a proper `buck2` "no-prelude" repository [here](https://google.com).
+In my opinion, it showcases some important concepts that I think newcomers to `buck2` would highly benefit from learning.
+
+But once again, writing your own custom `buck2` projects won't hurt :).
