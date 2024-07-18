@@ -79,7 +79,7 @@ But here are where the problems start.
 
 <br>
 
-# Old Technologies in a New Era
+# Old technologies in a new era
 
 The W3C standard is old.
 It was originally concepted in 1994.
