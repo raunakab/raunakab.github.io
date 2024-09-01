@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatDate, getBlogPosts } from "@/lib/utils";
+import { formatDate, getBlogPosts } from "@/lib/helpers";
 
 export function BlogPosts() {
   let allBlogs = getBlogPosts();

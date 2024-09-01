@@ -1,15 +1,7 @@
 const links = [
   {
-    name: "rss",
-    link: "/rss",
-  },
-  {
     name: "github",
     link: "https://github.com/raunakab",
-  },
-  {
-    name: "source code",
-    link: "https://github.com/raunakab/raunakab.github.io",
   },
   {
     name: "twitter",
@@ -18,6 +10,14 @@ const links = [
   {
     name: "linkedin",
     link: "https://www.linkedin.com/in/raunakbhagat",
+  },
+  {
+    name: "source code",
+    link: "https://github.com/raunakab/raunakab.github.io",
+  },
+  {
+    name: "rss",
+    link: "/rss",
   },
 ];
 
