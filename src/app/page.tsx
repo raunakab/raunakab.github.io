@@ -7,6 +7,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { formatDate, getAboutMe } from "@/lib/helpers";
+import { baseUrl } from "@/app/sitemap";
+import { CustomMDX } from "@/components/mdx";
 
 const content = {
   hoverCard: {
@@ -16,11 +19,10 @@ const content = {
     education: "CS + Math @ UBC, Vancouver",
     fallback: "rb",
   },
-  description: `I'm a Vim enthusiast and tab advocate, finding unmatched efficiency in
-    Vim's keystroke commands and tabs' flexibility for personal viewing
-    preferences. This extends to my support for static typing, where its
-    early error detection ensures cleaner code, and my preference for dark
-    mode, which eases long coding sessions by reducing eye strain.`,
+  description: `
+  Hey, I'm Raunak. I'm a software engineer in San Francisco, CA.
+  I graduated from UBC, Vancouver in May 2023.
+  I received a B.Sc. in Computer Science and Mathematics.`,
 };
 
 function TitleHoverCard() {
@@ -56,11 +58,15 @@ function TitleHoverCard() {
 }
 
 export default function Page() {
+  const [post] = getAboutMe();
+
   return (
     <section>
       <TitleHoverCard />
-      <p className="mb-4">{content.description}</p>
-      <div className="my-8">
+      <article className="prose">
+        <CustomMDX source={post.content} />
+      </article>
+      <div className="py-8 pt-24">
         <BlogPosts />
       </div>
     </section>
