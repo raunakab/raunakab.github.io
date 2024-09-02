@@ -14,7 +14,7 @@ const content = {
   hoverCard: {
     title: "@rabh",
     name: "Raunak Bhagat",
-    blurb: "SWE @ eventual-computing, previously @ Tesla",
+    blurb: "SWE @ Eventual Computing, ex-SWE @ Tesla",
     education: "CS + Math @ UBC, Vancouver",
     fallback: "rb",
   },
