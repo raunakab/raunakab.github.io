@@ -1,11 +1,20 @@
 import Link from "next/link";
 import { formatDate, getBlogPosts } from "@/lib/helpers";
 
+const content = {
+  title: "Blog Posts",
+};
+
 export function BlogPosts() {
   const allBlogs = getBlogPosts();
 
   return (
     <div>
+      <div>
+        <h1 className="py-8 text-2xl font-semibold tracking-tighter">
+          {content.title}
+        </h1>
+      </div>
       {allBlogs
         .sort((a, b) => {
           if (
