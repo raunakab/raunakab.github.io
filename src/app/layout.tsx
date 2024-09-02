@@ -10,18 +10,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Next.js Portfolio Starter",
-    template: "%s | Next.js Portfolio Starter",
+    default: "@rabh's blog",
+    template: "%s | @rabh's blog",
   },
-  description: "This is my portfolio.",
-  openGraph: {
-    title: "My Portfolio",
-    description: "This is my portfolio.",
-    url: baseUrl,
-    siteName: "My Portfolio",
-    locale: "en_US",
-    type: "website",
-  },
+  description: "My personal blog",
   robots: {
     index: true,
     follow: true,
