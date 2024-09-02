@@ -7,8 +7,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { formatDate, getAboutMe } from "@/lib/helpers";
-import { baseUrl } from "@/app/sitemap";
+import { getAboutMe } from "@/lib/helpers";
 import { CustomMDX } from "@/components/mdx";
 
 const content = {
@@ -66,7 +65,7 @@ export default function Page() {
       <article className="prose">
         <CustomMDX source={post.content} />
       </article>
-      <div className="py-8 pt-24">
+      <div className="py-8">
         <BlogPosts />
       </div>
     </section>
